@@ -7,6 +7,7 @@
 #define SCREEN_HEIGHT 64
 #define OLED_RESET -1          // Reset-Pin (oder -1, wenn über Arduino-Reset)
 #define SCREEN_ADDRESS 0x3C    // I2C-Adresse deines Displays
+#define delaytime 250
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
@@ -67,29 +68,47 @@ void graphicsDemo() {
 
   // Pixel
   display.drawPixel(10, 10, SSD1306_WHITE);
+  display.display();
+  delay(delaytime);
 
   // Linien
   display.drawLine(0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1, SSD1306_WHITE);
   display.drawLine(SCREEN_WIDTH - 1, 0, 0, SCREEN_HEIGHT - 1, SSD1306_WHITE);
-
+  display.display();
+  delay(delaytime);
+  
   // Rechteck (umrandet)
   display.drawRect(0, 16, 40, 20, SSD1306_WHITE);
+  display.display();
+  delay(delaytime);
+  
   // Rechteck (gefüllt)
   display.fillRect(45, 16, 40, 20, SSD1306_WHITE);
-
+  display.display();
+  delay(delaytime);
+  
   // Abgerundetes Rechteck (Outline)
   display.drawRoundRect(90, 16, 30, 20, 5, SSD1306_WHITE);
-
+  display.display();
+  delay(delaytime);
+  
   // Kreis und gefüllter Kreis
   display.drawCircle(20, 52, 10, SSD1306_WHITE);
+  display.display();
+  delay(delaytime);
+  
   display.fillCircle(50, 52, 10, SSD1306_WHITE);
-
+  display.display();
+  delay(delaytime);
+  
   // Dreieck und gefülltes Dreieck
   display.drawTriangle(80, 42, 120, 42, 100, 60, SSD1306_WHITE);
-  display.fillTriangle(82, 44, 118, 44, 100, 58, SSD1306_WHITE);
-
   display.display();
-  delay(2500);
+  delay(delaytime);
+  
+  display.fillTriangle(82, 44, 118, 44, 100, 58, SSD1306_WHITE);
+  display.display();
+  delay(delaytime);
 }
 
 void bitmapDemo() {
