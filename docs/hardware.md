@@ -33,7 +33,7 @@ The Mega serves as the development platform; future iterations may migrate to a 
 * Atmospheric pressure (used for weather trend estimation)
 
 **Interface:** I²C
-**Typical Address:** `0x76` or `0x77`
+**Typical Address:** >>`0x76`<< or `0x77`
 
 **Notes:**
 
@@ -51,7 +51,7 @@ The Mega serves as the development platform; future iterations may migrate to a 
 * Tilt compensation for compass data
 
 **Interface:** I²C
-**Address:** `0x68` (standard)
+**Address:** >>`0x68`<< (standard)
 
 **Notes:**
 
