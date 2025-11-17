@@ -51,7 +51,7 @@ The Mega serves as the development platform; future iterations may migrate to a 
 * Tilt compensation for compass data
 
 **Interface:** I²C
-**Address:** >>`0x68`<< (standard)
+**Address:** >>`0x67`<< (standard)
 
 **Notes:**
 
@@ -68,7 +68,7 @@ The Mega serves as the development platform; future iterations may migrate to a 
 * Magnetic field strength
 
 **Interface:** I²C
-**Addresses:**
+**Addresses:** ???
 
 * **QMC5883L:** typically `0x0D`
 * **HMC5883L:** typically `0x1E`
@@ -91,7 +91,7 @@ The Mega serves as the development platform; future iterations may migrate to a 
 * Timestamp for logs, alarms, stopwatches, timers
 
 **Interface:** I²C
-**Address:** `0x68`
+**Address:** >>`0x57`<<
 
 **Notes:**
 
