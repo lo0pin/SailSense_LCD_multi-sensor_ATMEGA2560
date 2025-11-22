@@ -22,12 +22,9 @@ SailSense/
 │   │   ├─ bme280/
 │   │   │   ├─ bme280_sensor.h
 │   │   │   └─ bme280_sensor.cpp
-│   │   ├─ mpu6050/
-│   │   │   ├─ mpu6050_sensor.h
-│   │   │   └─ mpu6050_sensor.cpp
-│   │   ├─ gy271/
-│   │   │   ├─ gy271_sensor.h
-│   │   │   └─ gy271_sensor.cpp
+│   │   ├─ mpu9250/
+│   │   │   ├─ mpu9250_sensor.h
+│   │   │   └─ mpu9250_sensor.cpp
 │   │   ├─ rtc/
 │   │   │   ├─ rtc_module.h
 │   │   │   └─ rtc_module.cpp
