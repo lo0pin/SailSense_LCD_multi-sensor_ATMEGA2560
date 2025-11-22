@@ -15,11 +15,11 @@ Aufruf von Display-Funktionen zum Rendern
 #pragma once
 
 enum class ScreenId {
-  ENV,
-  NAV,
-  TIMER,
-  ALARM,
-  SETTINGS
+ENV, 
+IMU,
+COMPASS,
+CLOCK,
+SETTINGS
 };
 
 namespace MenuSystem {
