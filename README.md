@@ -1,116 +1,163 @@
-# **SailSense – Modular Sensor Gadget for Sailors (Arduino Mega)**
+# **SailSense – Modular Sailing Companion (Arduino Mega)**
 
-*An experimental journey toward a compact, extensible, power-efficient sailing companion.*
+*A structured exploration of embedded design, sensor fusion, and thoughtful engineering.*
 
 ## **Overview**
 
-**SailSense** is a modular Arduino-based project designed to explore how far clean structure, low resource usage, and thoughtful abstraction can carry an embedded system.
-The project begins as a collection of environmental and motion sensors on an **Arduino Mega**, and moves—step by elegant step—towards a fully featured sailing gadget.
+**SailSense** is an experimental, modular Arduino project designed to become a compact sailing companion device.
+Its heart is an **Arduino Mega**, chosen for its generous I/O, stable ecosystem, and room for architectural experiments.
 
-This repository documents the architecture, experiments, concepts, and code as the system grows.
-Think of it as both a technical study and a personal logbook.
+The project grows organically: from a few sensors to an extensible, power-aware tool for navigation, weather awareness, and onboard utilities.
+This repository documents that journey—architecture, concepts, and code evolving together.
+
+---
 
 ## **Current Hardware Targets**
 
-The project is built around an **Arduino Mega** and integrates:
+SailSense currently uses the following components:
 
-* **BME280** – temperature, humidity, and pressure
-* **RTC module (DS3231/DS1307)** – real-time clock
-* **MPU6050** – gyroscope & accelerometer for roll, pitch & yaw
-* **GY-271 (QMC5883L / HMC5883L)** – 3-axis magnetometer (heading)
-* **20×4 I²C Display (HD44780 + PCF8574AT backpack)** – text output
-* **4 push buttons** – user input
-* **Piezo buzzer** – feedback & alarms
-* **18650 Li-Ion battery** (planned) – mobile power supply with analog voltage monitoring
+### **Core System**
 
-Future extensions include:
+* **Arduino Mega 2560**
 
-* **GPS module** – positioning, speed over ground, course over ground
-* **Communication interfaces** – possibly CAN, I²C expansion, or UART links to companion microcontrollers.
+### **Sensors**
 
-## **Planned Features**
+* **BME280**
+  Temperature, humidity, and pressure (environmental conditions)
+* **DS3231 Real-Time Clock**
+  Accurate timekeeping for logs and timers
+* **MPU9250 (IMU)**
+  9-axis sensor:
+  *3-axis gyro + 3-axis accelerometer + 3-axis magnetometer*
+  → Provides roll, pitch, yaw, and heading in a single device
+
+### **User Interface**
+
+* **0.96" OLED Display (SSD1306, 128×64, I²C)**
+  Graphical UI: compass rose, icons, trend lines, menus
+* **Four push buttons**
+  Navigation, confirmation, settings
+* **Piezo buzzer**
+  Alerts and interaction feedback
+
+### **Power**
+
+* **18650 Li-Ion battery (planned)**
+  With analog voltage monitoring and low-power modes
+
+---
+
+## **Planned Extensions**
+
+* **GPS module (NEO-6M)** – SOG, COG, UTC sync
+* **CAN, UART, or I²C expansion** – potential networking or modular sensor hubs
+* **Data logging** – EEPROM or external flash/SD
+
+---
+
+## **Features (Current & Planned)**
 
 ### **Navigation & Motion**
 
-* Boat heading (magnetometer)
-* Heel & pitch angles (IMU)
-* Course stability indicators
-* Motion-based alarms (e.g., anchor drift warning, strong gust roll detection)
+* Real-time heading using IMU magnetometer
+* Heel and pitch angle visualization
+* Smooth filtered angle outputs
+* Motion-based alarms (gust, rolling, anchor drift)
 
-### **Weather & Environment**
+### **Environment & Weather**
 
-* Pressure trend for weather forecasting
-* Air temperature & humidity
-* Configurable thresholds and alerts
+* Temperature / humidity / pressure readings
+* Pressure trend estimation for short-term forecasting
+* Customizable thresholds and warnings
 
 ### **Utility Tools**
 
 * Stopwatch
 * Countdown timer
 * Alarm clock
-* Sailing-specific timers (start-sequence timing, e.g. 5-4-1-go)
+* Sailing race start timer (5–4–1–GO)
 
-### **Power & Mobile Operation**
+### **Power & Efficiency**
 
-* 18650 battery monitoring via analog input
-* Power-friendly software design
-* Runtime optimization and sleep modes (planned)
+* Battery voltage measurement
+* OLED dimming
+* Low-power operating modes (planned)
 
-### **Architecture Goals**
+---
 
-This project is also a **software engineering experiment**:
+## **Architecture Goals**
 
-* Highly modular structure
-* Minimal memory footprint
-* Clean abstractions for sensors & subsystems
-* Easy extensibility for new hardware or features
-* Robustness and maintainability
+SailSense is as much a **software architecture experiment** as it is a gadget:
 
-Ultimately, SailSense aims to become a compact, intuitive, low-power companion for skippers and hobbyists alike.
+* Clean, layered structure
+* Hardware abstraction modules
+* Minimal dependencies and resource footprint
+* Easy feature expansion
+* Separation of UI, sensors, and core logic
+* Maintainability first
 
-## **Project Structure (to be filled as code evolves)**
+Ultimately, the device should feel like a **digital pocket sextant**—simple, compact, dependable.
+
+---
+
+## **Repository Structure**
 
 ```
 /src
-  /sensors
-  /display
-  /input
-  /core
+  /core            ← system init, main loop, global control
+  /sensors         ← BME280, MPU9250, DS3231 wrappers
+  /ui              ← OLED renderer, buttons, menus
+  /navigation      ← heading, motion, sensor fusion
+  /alerts          ← buzzer patterns
+  /utils           ← math, filters, helpers
 /docs
 /examples
+/hardware
 ```
 
-As modules grow, they’ll be documented with diagrams, architecture notes, and benchmarks.
+Each module aims to be self-contained, readable, and easy to replace.
+
+---
 
 ## **Why Arduino Mega?**
 
-* Plenty of I/O pins for modular expansion
-* Generous Flash & RAM for experimenting with abstraction layers
-* Stable platform with rich documentation
-* Ideal for comparing "clean code vs. resource budget" approaches
+* Large Flash & RAM → freedom to design clean abstractions
+* Plenty of hardware interrupts and pins
+* Stable and forgiving for architectural exploration
+* Perfect for testing modular design without needing to optimize too early
 
-The Mega is the project’s development base; later iterations may port to more compact or more efficient microcontrollers.
+Future versions may migrate to more compact or more efficient microcontrollers once the architecture stabilizes.
+
+---
 
 ## **Roadmap**
 
-* [ ] Define sensor abstraction layer
-* [ ] Basic reading of all sensors
-* [ ] Display UI framework
-* [ ] Button input handler
-* [ ] Buzzer feedback module
-* [ ] Battery voltage measurement
-* [ ] First navigation readings (heading, heel angle)
-* [ ] Pressure trend estimation
-* [ ] Modular menu system
-* [ ] Stopwatch / Timer / Alarm
+* [ ] Sensor abstraction layer (MPU9250, BME280, RTC)
+* [ ] Unified IMU fusion → Roll, pitch, yaw, heading
+* [ ] OLED UI framework (icons, screens, menus)
+* [ ] Button event system (short/long press)
+* [ ] Buzzer feedback patterns
+* [ ] Battery measurement module
+* [ ] Environmental & motion dashboard
+* [ ] Compass screen with tilt compensation
+* [ ] Stopwatch / timer / alarm suite
 * [ ] GPS integration
-* [ ] Power optimization
-* [ ] Communication interface experiments
+* [ ] Data logging system
+* [ ] Power saving modes
+* [ ] External communication tests (CAN/UART/I²C)
+
+---
 
 ## **Vision**
 
-A rugged little companion for sailors:
-simple, trustworthy, and extensible—
-like a pocket sextant for the digital age.
-Not just a device, but a study of clarity, efficiency, and thoughtful engineering.
+A rugged little sailing companion:
+responsive, quiet, and clear—
+a tool that speaks the language of wind and water.
 
+Not just hardware and code,
+but a study of **clarity, elegance, and engineering discipline**
+on a small embedded canvas.
+
+
+
+Just say the word.
