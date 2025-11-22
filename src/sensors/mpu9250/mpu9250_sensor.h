@@ -1,17 +1,26 @@
 /*
-Rolle: IMU (Gyro/Accel) für Gier-/Roll-/Nickwinkel.
+Rolle:
+Das neue Power-Modul — liefert alles, was du brauchst:
 
-Inhalt:
+Accelerometer
 
-Initialisierung des MPU6050
+Gyroscope
 
-Rohwerte holen, filtern
+Magnetometer
 
-ggf. Orientation-Berechnung (oder Übergabe der Rohdaten an navigation/motion)
+Orientation: Roll, Pitch, Yaw
+
+ggf. Kompasswinkel
+
+Sensorfusion (Complementary Filter, Madgwick, Mahony …)
 */
 
-namespace MPU9250Sensor {
-  bool begin();
-  void update();
-  MotionData getMotionDataRaw();  // oder getrennt accel/gyro
+#pragma once
+#include "types.h"
+
+namespace MPU9250Module {
+    bool begin();
+    void update();
+    IMUData getIMU();
+    float getHeadingDeg();   // magnetischer Kurs
 }
