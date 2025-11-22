@@ -13,6 +13,13 @@ Orientation: Roll, Pitch, Yaw
 ggf. Kompasswinkel
 
 Sensorfusion (Complementary Filter, Madgwick, Mahony …)
+
+
+Intern:
+
+Du nutzt eine Library wie SparkFunMPU9250-DMP oder bolderflight MPU9250.
+
+Der Code ist viel cleaner als getrennte Sensoren.
 */
 
 #pragma once
