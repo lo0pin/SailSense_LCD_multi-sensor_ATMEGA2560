@@ -22,14 +22,34 @@ SailSense currently uses the following components:
 
 ### **Sensors**
 
+SailSense currently uses the following components, detected on the I²C bus:
+
+#### **Display**
+
+* **0.96" OLED SSD1306**
+  **Address:** `0x3C`
+  Provides a 128×64 pixel graphical interface for navigation screens, menus, icons, and sensor data.
+
+#### **IMU**
+
+* **MPU9250 / MPU6050-based IMU**
+  **Address:** `0x68`
+  3-axis gyroscope, 3-axis accelerometer, and (for MPU9250) 3-axis magnetometer.
+  Used for roll/pitch/yaw, heading estimation, and motion analysis.
+
+#### **Environmental Sensor**
+
 * **BME280**
-  Temperature, humidity, and pressure (environmental conditions)
-* **DS3231 Real-Time Clock**
-  Accurate timekeeping for logs and timers
-* **MPU9250 (IMU)**
-  9-axis sensor:
-  *3-axis gyro + 3-axis accelerometer + 3-axis magnetometer*
-  → Provides roll, pitch, yaw, and heading in a single device
+  **Address:** `0x76`
+  Measures temperature, humidity, and pressure.
+  Enables weather trend estimation and environmental monitoring.
+
+#### **RTC (Real-Time Clock)**
+
+* **DS3231**
+  **Address:** `0x57`
+  High-accuracy real-time clock for timestamps, logs, alarms, and timer functions.
+
 
 ### **User Interface**
 
