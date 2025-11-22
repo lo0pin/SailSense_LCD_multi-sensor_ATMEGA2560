@@ -1,11 +1,16 @@
 /*
-Rolle: IMU (Gyro/Accel) für Gier-/Roll-/Nickwinkel.
+Rolle:
+Das neue Power-Modul — liefert alles, was du brauchst:
 
-Inhalt:
+Accelerometer
 
-Initialisierung des MPU6050
+Gyroscope
 
-Rohwerte holen, filtern
+Magnetometer
 
-ggf. Orientation-Berechnung (oder Übergabe der Rohdaten an navigation/motion)
+Orientation: Roll, Pitch, Yaw
+
+ggf. Kompasswinkel
+
+Sensorfusion (Complementary Filter, Madgwick, Mahony …)
 */
