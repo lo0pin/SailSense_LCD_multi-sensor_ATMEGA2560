@@ -15,18 +15,20 @@ struct EnvData {
   float pressure;
 };
 
-struct MotionData {
-  float roll;
-  float pitch;
-  float yaw;
+struct IMUData {
+    float roll;
+    float pitch;
+    float yaw;
+
+    float magX;
+    float magY;
+    float magZ;
 };
 
-struct HeadingData {
-  float headingDeg;
-};
 
 struct BatteryStatus {
   float voltage;
   float percentage;
 };
+
 
