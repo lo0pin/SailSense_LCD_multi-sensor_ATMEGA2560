@@ -22,18 +22,17 @@ Buzzer
 globale Zustandsobjekte
 */
 
-#include "system_init.h"
-#include "bme280_sensor.h"
-#include "mpu6050_sensor.h"
-#include "gy271_sensor.h"
-#include "rtc_module.h"
+#include "mpu9250_module.h"
+#include "display_oled.h"
 #include "battery_monitor.h"
-#include "display.h"
+#include "rtc_module.h"
 #include "buttons.h"
-#include "buzzer.h"
 
 void systemInit() {
-  // Wire, Serial, Sensor-Init, Display-Init etc.
+    Wire.begin();
+    Buttons::begin();
+    DisplayOLED::begin();
+    RTCModule::begin();
+    BatteryMonitor::begin();
+    MPU9250Module::begin();
 }
-
-
