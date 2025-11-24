@@ -1,3 +1,4 @@
+/////////////////////////////////////////
 #include "testfile.h"
 
 #include <Wire.h>
@@ -8,9 +9,17 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-#define DEBUG 0
+#include "RTClib.h"
+/////////////////////////////////////////
 
-void systemInit(Adafruit_BME280& bme_var, ){
+#define DEBUG 0
+#define SETTIMEONCE 0
+
+/////////////////////////////////////////
+
+
+
+void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var){
 #IF DEBUG
   Serial.begin(9600);
   while (!Serial) { /* warten, falls nötig */ }
@@ -18,9 +27,15 @@ void systemInit(Adafruit_BME280& bme_var, ){
   wire.begin();
   while(!initBME280(bme_var)){
 #IF DEBUG
-  Serial.println("BME nicht gefunden")
-  delay(1000);
-#ENDIF  
+    Serial.println("BME nicht gefunden")
+#ENDIF 
+    delay(1000);
+  }
+  while(!initRTC(rtc_var)){
+#IF DEBUG
+    Serial.println(F("FEHLER: DS3231 nicht gefunden. Wiring/Adresse prüfen!"));
+#ENDIF 
+    delay(1000);
   }
 }
 
@@ -43,6 +58,29 @@ bool initBME280(Adafruit_BME280& bme_var) {
 
   return false;
 }
+
+
+bool initRTC(RTC_DS3231& rtc_var){
+  if(rtc_var.begin()){
+    if (rtc_var.lostPower()) {
+#IF DEBUG
+      Serial.println(F("RTC meldet Stromverlust → Zeit wird neu gesetzt."));
+#ENDIF  
+      rtc_var.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    } else {
+#IF DEBUG
+      Serial.println(F("RTC hatte keinen Stromverlust (Zeit gültig)."));
+#ENDIF
+    }
+#IF SETTIMEONCE    
+    rtc_var.adjust(DateTime(F(__DATE__), F(__TIME__)));
+#ENDIF
+    return true;
+  }
+  return false;
+
+}
+
 
 
 
