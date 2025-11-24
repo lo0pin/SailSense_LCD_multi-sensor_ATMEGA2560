@@ -9,11 +9,13 @@ constexpr uint8_t MPU9250_ADDR      0x68
 class Adafruit_BME280;
 class RTC_DS3231;
 class Adafruit_SSD1306;
+class MPU9250_WE;
 
-void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306& oled_var);
+void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306& oled_var, MPU9250_WE& imu_var);
 bool initBME280(Adafruit_BME280& bme_var);
 bool initRTC(RTC_DS3231& rtc_var);
 bool initDISPLAY(Adafruit_SSD1306& display_var);
+bool initIMU(MPU9250_WE& imu_var);
 
 void updateButtons();
 void updateSensors();
