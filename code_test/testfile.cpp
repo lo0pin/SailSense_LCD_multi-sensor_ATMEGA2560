@@ -49,6 +49,14 @@ void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var){
 #ENDIF 
     delay(1000);
   }
+  while(!initIMU){
+ #IF DEBUG    
+    Serial.println("FEHLER: MPU9250 antwortet nicht. Verkabelung/Adresse prüfen!");
+ #ENDIF   
+    delay(1000);
+  }
+
+  
 }
 
 
@@ -103,8 +111,25 @@ bool initDISPLAY(Adafruit_SSD1306& display_var){
     return true;
   }
   return false;
-
 }
+
+bool initIMU(MPU9250_WE& imu_var){
+  if (imu_var.init()){
+    // ---------- Sensorbereiche setzen ----------
+    // Acc: +/-2g,4g,8g,16g
+    imu_var.setAccRange(MPU9250_ACC_RANGE_8G);     // guter Allround-Bereich
+    // Gyro: +/-250,500,1000,2000 deg/s
+    imu_var.setGyrRange(MPU9250_GYRO_RANGE_500);   // ausreichend dynamisch
+    // Mag: full-scale wird intern gesetzt; wir wählen Betriebsmodus:
+    imu_var.setMagOpMode(AK8963_CONT_MODE_100HZ);  // kontinuierlich, 100 Hz
+    return true;
+  }
+  return false;
+}
+
+
+
+
 
 
 
