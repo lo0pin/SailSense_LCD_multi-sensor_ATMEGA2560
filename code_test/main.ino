@@ -6,7 +6,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 MPU9250_WE imu = MPU9250_WE(MPU9250_ADDR);
 
 void setup(){
-  systemInit();
+  systemInit(bme, rtc, display, imu);
 }
 
 void loop(){
