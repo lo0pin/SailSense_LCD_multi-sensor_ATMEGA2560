@@ -6,9 +6,6 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
-
 #include "RTClib.h"
 
 #include <Adafruit_GFX.h>
@@ -25,32 +22,32 @@
 
 
 
-void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var){
-#IF DEBUG
+void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306& display_var, MPU9250_WE& imu_var){
+#if DEBUG
   Serial.begin(9600);
   while (!Serial) { /* warten, falls nötig */ }
 #ENDIF
-  wire.begin();
+  Wire.begin();
   while(!initBME280(bme_var)){
-#IF DEBUG
+#if DEBUG
     Serial.println("BME nicht gefunden")
 #ENDIF 
     delay(1000);
   }
   while(!initRTC(rtc_var)){
-#IF DEBUG
+#if DEBUG
     Serial.println(F("FEHLER: DS3231 nicht gefunden. Wiring/Adresse prüfen!"));
 #ENDIF 
     delay(1000);
   }
-  while(!initDISPLAY){
-#IF DEBUG    
+  while(!initDISPLAY(display_var)){
+#if DEBUG    
     Serial.println(F("SSD1306 nicht gefunden. Check Verkabelung/Adresse!"));
 #ENDIF 
     delay(1000);
   }
-  while(!initIMU){
- #IF DEBUG    
+  while(!initIMU(imu_var)){
+ #if DEBUG    
     Serial.println("FEHLER: MPU9250 antwortet nicht. Verkabelung/Adresse prüfen!");
  #ENDIF   
     delay(1000);
@@ -63,14 +60,14 @@ void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var){
 bool initBME280(Adafruit_BME280& bme_var) {
   // Erst Adresse 0x76 versuchen
   if (bme_var.begin(0x76)) {
-#IF DEBUG
+#if DEBUG
     Serial.println(F("BME280 gefunden auf Adresse 0x76."));
 #ENDIF
     return true;
   }
   // Dann 0x77
   if (bme_var.begin(0x77)) {
-#IF DEBUG
+#if DEBUG
     Serial.println(F("BME280 gefunden auf Adresse 0x77."));
 #ENDIF
     return true;
@@ -83,16 +80,16 @@ bool initBME280(Adafruit_BME280& bme_var) {
 bool initRTC(RTC_DS3231& rtc_var){
   if(rtc_var.begin()){
     if (rtc_var.lostPower()) {
-#IF DEBUG
+#if DEBUG
       Serial.println(F("RTC meldet Stromverlust → Zeit wird neu gesetzt."));
 #ENDIF  
       rtc_var.adjust(DateTime(F(__DATE__), F(__TIME__)));
     } else {
-#IF DEBUG
+#if DEBUG
       Serial.println(F("RTC hatte keinen Stromverlust (Zeit gültig)."));
 #ENDIF
     }
-#IF SETTIMEONCE    
+#if SETTIMEONCE    
     rtc_var.adjust(DateTime(F(__DATE__), F(__TIME__)));
 #ENDIF
     return true;
