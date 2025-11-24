@@ -10,6 +10,12 @@
 #include <Adafruit_SSD1306.h>
 
 #include "RTClib.h"
+
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+#include <MPU9250_WE.h>
+
 /////////////////////////////////////////
 
 #define DEBUG 0
@@ -34,6 +40,12 @@ void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var){
   while(!initRTC(rtc_var)){
 #IF DEBUG
     Serial.println(F("FEHLER: DS3231 nicht gefunden. Wiring/Adresse prüfen!"));
+#ENDIF 
+    delay(1000);
+  }
+  while(!initDISPLAY){
+#IF DEBUG    
+    Serial.println(F("SSD1306 nicht gefunden. Check Verkabelung/Adresse!"));
 #ENDIF 
     delay(1000);
   }
@@ -75,6 +87,19 @@ bool initRTC(RTC_DS3231& rtc_var){
 #IF SETTIMEONCE    
     rtc_var.adjust(DateTime(F(__DATE__), F(__TIME__)));
 #ENDIF
+    return true;
+  }
+  return false;
+
+}
+
+
+bool initDISPLAY(Adafruit_SSD1306& display_var){
+  if(display_var.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)){
+    display_var.clearDisplay();
+    display_var.setTextSize(1);
+    display_var.setTextColor(SSD1306_WHITE);
+    display_var.setCursor(0, 0);
     return true;
   }
   return false;
