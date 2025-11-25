@@ -17,6 +17,7 @@ uint16_t delaytime = 300;
 unsigned long globaltimer =0;
 uint16_t minite = 0;
 
+
 /////////////////////////////////////////
 
 void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306& display_var, MPU9250_WE& imu_var){
@@ -175,3 +176,4 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct){
 void handleAlarms(){
   
 }
+
