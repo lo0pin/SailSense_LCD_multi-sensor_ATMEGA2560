@@ -30,7 +30,7 @@ void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306&
   Wire.begin();
   while(!initBME280(bme_var)){
 #if DEBUG
-    Serial.println("BME nicht gefunden")
+    Serial.println("BME nicht gefunden");
 #endif 
     delay(1000);
   }
