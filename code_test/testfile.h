@@ -1,5 +1,6 @@
 #pragma once
 
+
 // Bibliotheken einbinden, damit die Typen vollständig sind wenn main.ino
 // die globalen Objekte (z.B. Adafruit_BME280 bme;) deklariert.
 #include <Wire.h>
@@ -41,3 +42,4 @@ void updateNavigation();
 void updateMenuSystem(uint8_t button);
 void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct);
 void handleAlarms();
+
