@@ -83,14 +83,14 @@ bool initRTC(RTC_DS3231& rtc_var){
 #if DEBUG
       Serial.println(F("RTC meldet Stromverlust → Zeit wird neu gesetzt."));
 #endif  
-      rtc_var.adjust(DateTime(F(__DATE__), F(__TIME__)));
+      rtc_var.adjust(DateTime((__DATE__), (__TIME__)));
     } else {
 #if DEBUG
       Serial.println(F("RTC hatte keinen Stromverlust (Zeit gültig)."));
 #endif
     }
 #if SETTIMEONCE    
-    rtc_var.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    rtc_var.adjust(DateTime((__DATE__), (__TIME__)));
 #endif
     return true;
   }
