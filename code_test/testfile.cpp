@@ -26,30 +26,30 @@ void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306&
 #if DEBUG
   Serial.begin(9600);
   while (!Serial) { /* warten, falls nötig */ }
-#ENDIF
+#endif
   Wire.begin();
   while(!initBME280(bme_var)){
 #if DEBUG
     Serial.println("BME nicht gefunden")
-#ENDIF 
+#endif 
     delay(1000);
   }
   while(!initRTC(rtc_var)){
 #if DEBUG
     Serial.println(F("FEHLER: DS3231 nicht gefunden. Wiring/Adresse prüfen!"));
-#ENDIF 
+#endif 
     delay(1000);
   }
   while(!initDISPLAY(display_var)){
 #if DEBUG    
     Serial.println(F("SSD1306 nicht gefunden. Check Verkabelung/Adresse!"));
-#ENDIF 
+#endif 
     delay(1000);
   }
   while(!initIMU(imu_var)){
  #if DEBUG    
     Serial.println("FEHLER: MPU9250 antwortet nicht. Verkabelung/Adresse prüfen!");
- #ENDIF   
+ #endif   
     delay(1000);
   }
 
@@ -62,14 +62,14 @@ bool initBME280(Adafruit_BME280& bme_var) {
   if (bme_var.begin(0x76)) {
 #if DEBUG
     Serial.println(F("BME280 gefunden auf Adresse 0x76."));
-#ENDIF
+#endif
     return true;
   }
   // Dann 0x77
   if (bme_var.begin(0x77)) {
 #if DEBUG
     Serial.println(F("BME280 gefunden auf Adresse 0x77."));
-#ENDIF
+#endif
     return true;
   }
 
@@ -82,16 +82,16 @@ bool initRTC(RTC_DS3231& rtc_var){
     if (rtc_var.lostPower()) {
 #if DEBUG
       Serial.println(F("RTC meldet Stromverlust → Zeit wird neu gesetzt."));
-#ENDIF  
+#endif  
       rtc_var.adjust(DateTime(F(__DATE__), F(__TIME__)));
     } else {
 #if DEBUG
       Serial.println(F("RTC hatte keinen Stromverlust (Zeit gültig)."));
-#ENDIF
+#endif
     }
 #if SETTIMEONCE    
     rtc_var.adjust(DateTime(F(__DATE__), F(__TIME__)));
-#ENDIF
+#endif
     return true;
   }
   return false;
