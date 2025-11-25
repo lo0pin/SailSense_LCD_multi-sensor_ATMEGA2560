@@ -2,17 +2,12 @@
 #include "testfile.h"
 
 #include <Wire.h>
-
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
-
 #include "RTClib.h"
-
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-
 #include <MPU9250_WE.h>
-
 /////////////////////////////////////////
 
 #define DEBUG 0
@@ -20,12 +15,11 @@
 
 /////////////////////////////////////////
 
-
-
 void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306& display_var, MPU9250_WE& imu_var){
 #if DEBUG
   Serial.begin(9600);
-  while (!Serial) { /* warten, falls nötig */ }
+  // Hinweis: on Mega/2560 ist while(!Serial) normalerweise nicht nötig und kann blockieren.
+  // while (!Serial) { /* warten, falls nötig */ }
 #endif
   Wire.begin();
   while(!initBME280(bme_var)){
@@ -47,15 +41,12 @@ void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306&
     delay(1000);
   }
   while(!initIMU(imu_var)){
- #if DEBUG    
-    Serial.println("FEHLER: MPU9250 antwortet nicht. Verkabelung/Adresse prüfen!");
- #endif   
+#if DEBUG    
+    Serial.println(F("FEHLER: MPU9250 antwortet nicht. Verkabelung/Adresse prüfen!"));
+#endif   
     delay(1000);
   }
-
-  
 }
-
 
 bool initBME280(Adafruit_BME280& bme_var) {
   // Erst Adresse 0x76 versuchen
@@ -76,28 +67,25 @@ bool initBME280(Adafruit_BME280& bme_var) {
   return false;
 }
 
-
 bool initRTC(RTC_DS3231& rtc_var){
   if(rtc_var.begin()){
     if (rtc_var.lostPower()) {
 #if DEBUG
       Serial.println(F("RTC meldet Stromverlust → Zeit wird neu gesetzt."));
 #endif  
-      rtc_var.adjust(DateTime((__DATE__), (__TIME__)));
+      rtc_var.adjust(DateTime(__DATE__, __TIME__));
     } else {
 #if DEBUG
       Serial.println(F("RTC hatte keinen Stromverlust (Zeit gültig)."));
 #endif
     }
 #if SETTIMEONCE    
-    rtc_var.adjust(DateTime((__DATE__), (__TIME__)));
+    rtc_var.adjust(DateTime(__DATE__, __TIME__));
 #endif
     return true;
   }
   return false;
-
 }
-
 
 bool initDISPLAY(Adafruit_SSD1306& display_var){
   if(display_var.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)){
@@ -123,13 +111,6 @@ bool initIMU(MPU9250_WE& imu_var){
   }
   return false;
 }
-
-
-
-
-
-
-
 
 void updateButtons(){
   
