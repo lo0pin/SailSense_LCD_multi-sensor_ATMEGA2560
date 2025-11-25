@@ -25,9 +25,19 @@ bool initRTC(RTC_DS3231& rtc_var);
 bool initDISPLAY(Adafruit_SSD1306& display_var);
 bool initIMU(MPU9250_WE& imu_var);
 
-void updateButtons();
-void updateSensors();
+extern unsigned long globaltimer;
+extern uint16_t delaytime;
+extern uint16_t minite;
+
+struct BMEData{
+  float temp;
+  float humi;
+  float baro;
+};
+
+uint8_t updateButtons();
+BMEData updateSensors(Adafruit_BME280& bme_var);
 void updateNavigation();
-void updateMenuSystem();
-void renderDisplay();
+void updateMenuSystem(uint8_t button);
+void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct);
 void handleAlarms();

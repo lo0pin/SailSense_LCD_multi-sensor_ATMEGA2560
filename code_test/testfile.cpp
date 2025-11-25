@@ -10,8 +10,12 @@
 #include <MPU9250_WE.h>
 /////////////////////////////////////////
 
-#define DEBUG 0
+#define DEBUG 1
 #define SETTIMEONCE 0
+
+uint16_t delaytime = 300;
+unsigned long globaltimer =0;
+uint16_t minite = 0;
 
 /////////////////////////////////////////
 
@@ -40,11 +44,16 @@ void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306&
 #endif 
     delay(1000);
   }
-  while(!initIMU(imu_var)){
-#if DEBUG    
-    Serial.println(F("FEHLER: MPU9250 antwortet nicht. Verkabelung/Adresse prüfen!"));
-#endif   
-    delay(1000);
+//  while(!initIMU(imu_var)){
+//#if DEBUG    
+//    Serial.println(F("FEHLER: MPU9250 antwortet nicht. Verkabelung/Adresse prüfen!"));
+//#endif   
+//    delay(1000);
+//  }
+  
+  //Tasterpins initialisieren
+  for (int i = 8; i<=12; ++i){
+    pinMode(i, INPUT_PULLUP);
   }
 }
 
@@ -112,25 +121,56 @@ bool initIMU(MPU9250_WE& imu_var){
   return false;
 }
 
-void updateButtons(){
-  
+//////////////////////////////////
+
+
+
+uint8_t updateButtons(){
+  for (uint8_t i= 8; i<=12; ++i){
+    if (digitalRead(i)==1){
+      return i;
+    }
+  }
 }
 
-void updateSensors(){
-  
+//////////////////////////////////
+
+
+BMEData updateSensors(Adafruit_BME280& bme_var){
+  BMEData m;
+  m.temp = bme_var.readTemperature();         // °C
+  m.humi = bme_var.readHumidity();            // %
+  m.baro = bme_var.readPressure() / 100;    // hPa   
+  return m;       
 }
+
+//////////////////////////////////
 
 void updateNavigation(){
   
 }
 
-void updateMenuSystem(){
+//////////////////////////////////
+
+void updateMenuSystem(uint8_t button){
   
 }
 
-void renderDisplay(){
+void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct){
+  dis.clearDisplay();
+  dis.setCursor(0, 0);
   
+  dis.print(F("T:   "));
+  dis.println(bme_struct.temp,1);
+  dis.print(F("H:   "));
+  dis.println(bme_struct.humi,1);
+  dis.print(F("P:   "));
+  dis.println(bme_struct.baro,1);
+
+  dis.display();
 }
+
+//////////////////////////////////
 
 void handleAlarms(){
   
