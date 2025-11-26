@@ -10,8 +10,9 @@
 #include <MPU9250_WE.h>
 /////////////////////////////////////////
 
-#define DEBUG 1
-#define SETTIMEONCE 0
+
+#define initialize_delay 20
+#define initialize_fail_delay 1000
 
 uint16_t delaytime = 300;
 unsigned long globaltimer =0;
@@ -23,48 +24,61 @@ uint16_t minite = 0;
 void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306& display_var, MPU9250_WE& imu_var){
 #if DEBUG
   Serial.begin(9600);
-  delay(100);
+  delay(initialize_delay);
   // Hinweis: on Mega/2560 ist while(!Serial) normalerweise nicht nötig und kann blockieren.
   while (!Serial) { /* warten, falls nötig */ }
 #endif
   Wire.begin();
-  delay(100);
+  Wire.setClock(400000);   
+  delay(initialize_delay);
   while(!initBME280(bme_var)){
 #if DEBUG
-    Serial.println("BME nicht gefunden");
+    Serial.println("BME-Sensor nicht gefunden");
 #endif 
-    delay(1000);
+    delay(initialize_fail_delay);
   }
-  delay(100);
+#if DEBUG
+    Serial.println("BME-Sensor initialisiert!");
+#endif 
+  delay(initialize_delay);
   while(!initRTC(rtc_var)){
 #if DEBUG
-    Serial.println(F("FEHLER: DS3231 nicht gefunden. Wiring/Adresse prüfen!"));
+    Serial.println(F("FEHLER: DS3231-RTC nicht gefunden. Wiring/Adresse prüfen!"));
 #endif 
-    delay(1000);
+    delay(initialize_fail_delay);
   }
-  delay(100);
+#if DEBUG
+    Serial.println(F("DS3231-RTC initialisiert!"));
+#endif 
+  delay(initialize_delay);
   while(!initDISPLAY(display_var)){
 #if DEBUG    
-    Serial.println(F("SSD1306 nicht gefunden. Check Verkabelung/Adresse!"));
+    Serial.println(F("SSD1306-Display nicht gefunden. Check Verkabelung/Adresse!"));
 #endif 
-    delay(1000);
+    delay(initialize_fail_delay);
   }
-  
-/**************************************
-I2C-Scanner einbauen und Output posten
-***************************************/
-  
-//  while(!initIMU(imu_var)){
-//#if DEBUG    
-//    Serial.println(F("FEHLER: MPU9250 antwortet nicht. Verkabelung/Adresse prüfen!"));
-//#endif   
-//    delay(1000);
-//  }
-  
+  delay(initialize_delay);
+#if DEBUG    
+    Serial.println(F("SSD1306-Display initialisiert!"));
+#endif 
+  while(!initIMU(imu_var)){
+#if DEBUG    
+    Serial.println(F("FEHLER: MPU9250-Sensor antwortet nicht. Verkabelung/Adresse prüfen!"));
+#endif   
+    delay(initialize_fail_delay);
+  }
+#if DEBUG    
+    Serial.println(F("MPU9250-Sensor initialisiert!"));
+#endif     
+/*
+*/  
   //Tasterpins initialisieren
   for (int i = 8; i<=12; ++i){
     pinMode(i, INPUT_PULLUP);
   }
+#if DEBUG    
+  Serial.println(F("Tasterpins initialisiert!"));
+#endif 
 }
 
 bool initBME280(Adafruit_BME280& bme_var) {
@@ -100,6 +114,7 @@ bool initRTC(RTC_DS3231& rtc_var){
     }
 #if SETTIMEONCE    
     rtc_var.adjust(DateTime(__DATE__, __TIME__));
+    Serial.println(F("RTC auf Compile-Time gesetzt!"));
 #endif
     return true;
   }
@@ -177,6 +192,8 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct){
   dis.print(F("P:   "));
   dis.println(bme_struct.baro,1);
 
+  
+
   dis.display();
 }
 
@@ -185,6 +202,3 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct){
 void handleAlarms(){
   
 }
-
-
-
