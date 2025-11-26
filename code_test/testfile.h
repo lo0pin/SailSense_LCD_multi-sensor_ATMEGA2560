@@ -1,5 +1,15 @@
 #pragma once
 
+/****************************
+21:21:27.426 ->   0x3C  (ACK)
+21:21:27.461 ->   0x57  (ACK)
+21:21:27.461 ->   0x68  (ACK)
+21:21:27.461 ->   0x69  (ACK)
+21:21:27.494 ->   0x76  (ACK)
+****************************/
+
+#define DEBUG 1
+#define SETTIMEONCE 0
 
 // Bibliotheken einbinden, damit die Typen vollständig sind wenn main.ino
 // die globalen Objekte (z.B. Adafruit_BME280 bme;) deklariert.
@@ -16,7 +26,7 @@ constexpr uint8_t  SCREEN_HEIGHT =   64;
 constexpr int8_t   OLED_RESET =      -1;      // Reset-Pin (oder -1, wenn über Arduino-Reset)
 constexpr uint8_t  SCREEN_ADDRESS =  0x3C;    // I2C-Adresse deines Displays
 
-constexpr uint8_t MPU9250_ADDR =      0x68; //Du verwendest 0x68 als Adresse. Manche MPU9250-Module verwenden jedoch 0x69 (wenn AD0-Pin auf HIGH liegt).
+constexpr uint8_t MPU9250_ADDR =      0x69;
 //constexpr uint8_t INT_PIN           2          // optional, falls INT verbunden ist
 
 // Funktionsdeklarationen
@@ -36,11 +46,10 @@ struct BMEData{
   float baro;
 };
 
+
 uint8_t updateButtons();
 BMEData updateSensors(Adafruit_BME280& bme_var);
 void updateNavigation();
 void updateMenuSystem(uint8_t button);
 void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct);
 void handleAlarms();
-
-
