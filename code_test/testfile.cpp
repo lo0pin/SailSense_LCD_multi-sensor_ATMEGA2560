@@ -24,7 +24,7 @@ void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306&
 #if DEBUG
   Serial.begin(9600);
   // Hinweis: on Mega/2560 ist while(!Serial) normalerweise nicht nötig und kann blockieren.
-  // while (!Serial) { /* warten, falls nötig */ }
+  while (!Serial) { /* warten, falls nötig */ }
 #endif
   Wire.begin();
   while(!initBME280(bme_var)){
@@ -176,4 +176,5 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct){
 void handleAlarms(){
   
 }
+
 
