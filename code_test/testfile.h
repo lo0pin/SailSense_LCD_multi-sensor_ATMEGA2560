@@ -16,7 +16,7 @@ constexpr uint8_t  SCREEN_HEIGHT =   64;
 constexpr int8_t   OLED_RESET =      -1;      // Reset-Pin (oder -1, wenn über Arduino-Reset)
 constexpr uint8_t  SCREEN_ADDRESS =  0x3C;    // I2C-Adresse deines Displays
 
-constexpr uint8_t MPU9250_ADDR =      0x68;
+constexpr uint8_t MPU9250_ADDR =      0x68; //Du verwendest 0x68 als Adresse. Manche MPU9250-Module verwenden jedoch 0x69 (wenn AD0-Pin auf HIGH liegt).
 //constexpr uint8_t INT_PIN           2          // optional, falls INT verbunden ist
 
 // Funktionsdeklarationen
@@ -42,4 +42,5 @@ void updateNavigation();
 void updateMenuSystem(uint8_t button);
 void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct);
 void handleAlarms();
+
 
