@@ -23,28 +23,37 @@ uint16_t minite = 0;
 void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306& display_var, MPU9250_WE& imu_var){
 #if DEBUG
   Serial.begin(9600);
+  delay(100);
   // Hinweis: on Mega/2560 ist while(!Serial) normalerweise nicht nötig und kann blockieren.
   while (!Serial) { /* warten, falls nötig */ }
 #endif
   Wire.begin();
+  delay(100);
   while(!initBME280(bme_var)){
 #if DEBUG
     Serial.println("BME nicht gefunden");
 #endif 
     delay(1000);
   }
+  delay(100);
   while(!initRTC(rtc_var)){
 #if DEBUG
     Serial.println(F("FEHLER: DS3231 nicht gefunden. Wiring/Adresse prüfen!"));
 #endif 
     delay(1000);
   }
+  delay(100);
   while(!initDISPLAY(display_var)){
 #if DEBUG    
     Serial.println(F("SSD1306 nicht gefunden. Check Verkabelung/Adresse!"));
 #endif 
     delay(1000);
   }
+  
+/**************************************
+I2C-Scanner einbauen und Output posten
+***************************************/
+  
 //  while(!initIMU(imu_var)){
 //#if DEBUG    
 //    Serial.println(F("FEHLER: MPU9250 antwortet nicht. Verkabelung/Adresse prüfen!"));
@@ -176,5 +185,6 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct){
 void handleAlarms(){
   
 }
+
 
 
