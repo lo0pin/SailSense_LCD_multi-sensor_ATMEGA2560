@@ -4,7 +4,7 @@
 Adafruit_BME280     bme; // I2C
 RTC_DS3231          rtc;
 Adafruit_SSD1306    display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-MPU9250_WE imu =    MPU9250_WE(MPU9250_ADDR);
+MPU9250_WE imu =    MPU9250_WE(MPU9250_ADDR); //Du verwendest 0x68 als Adresse. Manche MPU9250-Module verwenden jedoch 0x69 (wenn AD0-Pin auf HIGH liegt).
 
 void setup() {
   systemInit(bme, rtc, display, imu);
@@ -41,4 +41,5 @@ void loop() {
   renderDisplay(display, current_bme);
   handleAlarms();
 }
+
 
