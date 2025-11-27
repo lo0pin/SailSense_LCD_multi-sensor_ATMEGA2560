@@ -201,15 +201,15 @@ HEADING (Kompasskurs)
          180°
        (Süden)
 
-Heading	Richtung
-0°	    Norden
-45°	    Nordosten
-90°	    Osten
-135°	  Südosten
-180°	  Süden
-225°	  Südwesten
-270°	  Westen
-315°	  Nordwesten
+Heading  Richtung
+0°      Norden
+45°     Nordosten
+90°     Osten
+135°    Südosten
+180°    Süden
+225°    Südwesten
+270°    Westen
+315°    Nordwesten
 
 
 ROLL (Krängung)
@@ -226,15 +226,15 @@ ROLL (Krängung)
       |
     -90°
 
-Roll	Bedeutung	                    Visualisierung
-0°	  Perfekt waagrecht	            ───
-+15°	Leichte Neigung nach links	  ╱──
-+45°	Starke Neigung nach links	    │╱
-+90°	Auf linker Seite liegend	    │
--15°	Leichte Neigung nach rechts	  ──╲
--45°	Starke Neigung nach rechts	  ╲│
--90°	Auf rechter Seite liegend	    │
-±180°	Auf dem Kopf	                ───
+Roll  Bedeutung                     Visualisierung
+0°    Perfekt waagrecht             ───
++15°  Leichte Neigung nach links    ╱──
++45°  Starke Neigung nach links     │╱
++90°  Auf linker Seite liegend      │
+-15°  Leichte Neigung nach rechts   ──╲
+-45°  Starke Neigung nach rechts    ╲│
+-90°  Auf rechter Seite liegend     │
+±180° Auf dem Kopf                  ───
 
 
 PITCH (Stampfen)
@@ -251,14 +251,14 @@ PITCH (Stampfen)
       |
     -90°
 
-Pitch	Bedeutung	                                  Visualisierung
-0°	  Horizontal	                                →
-+10°	Bug leicht oben	                            ↗
-+30°	Bug stark oben (Steigflug/Welle)	          ⭱
-+90°	Senkrecht nach oben	                        ↑
--10°	Bug leicht unten	                          ↘
--30°	Bug stark unten (Sturzflug/Wellenabfahrt)	  ⭳
--90°	Senkrecht nach unten	                      ↓
+Pitch Bedeutung                                   Visualisierung
+0°    Horizontal                                  →
++10°  Bug leicht oben                             ↗
++30°  Bug stark oben (Steigflug/Welle)            ⭱
++90°  Senkrecht nach oben                         ↑
+-10°  Bug leicht unten                            ↘
+-30°  Bug stark unten (Sturzflug/Wellenabfahrt)   ⭳
+-90°  Senkrecht nach unten                        ↓
 
 */
 
@@ -269,7 +269,7 @@ IMUData updateNavigation(MPU9250_WE& imu_var){
   float roll = atan2(acc.y, acc.z) * 180 / PI;
   float pitch = atan2(-acc.x, sqrt(acc.y*acc.y + acc.z*acc.z)) * 180 / PI;
   //Heading
-  xyzFloat mag = imu.getMagValues();
+  xyzFloat mag = imu_var.getMagValues();
   float heading = atan2(mag.y, mag.x) * 180 / PI;
   if (heading < 0) heading += 360;
   //if (heading >360) heading -= 360;
@@ -290,19 +290,19 @@ uint8_t updateMenuSystem(uint8_t button){
 void renderDisplay_Setup(Adafruit_SSD1306& dis){
   dis.clearDisplay();
 
-  display.setTextSize(2);
-  display.println(F("SailSense"));
+  dis.setTextSize(2);
+  dis.println(F("SailSense"));
   
-  display.setTextSize(1);
-  display.println(F("by Julian Kampitsch"));
-  display.println(F("2025"));
-  display.println(F(""));
-  display.print(F("booting"));
+  dis.setTextSize(1);
+  dis.println(F("by Julian Kampitsch"));
+  dis.println(F("2025"));
+  dis.println(F(""));
+  dis.print(F("booting"));
   dis.display();
   
   for (uint8_t i = 0; i<3; ++i){
     delay(booting_display_message_delay);
-    display.print(F("."));
+    dis.print(F("."));
     dis.display();    
   }
 }
@@ -327,8 +327,10 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_stru
   dis.println(bme_struct.baro,1);
 
   dis.print(F("R:   "));
+  if (imu_struct.roll<0) dis.print(F(" "));
   dis.println(imu_struct.roll,1);
   dis.print(F("P:   "));
+  if (imu_struct.pitch<0) dis.print(F(" "));
   dis.println(imu_struct.pitch,1);
   dis.print(F("M:   "));
   dis.println(imu_struct.heading,1);
@@ -343,7 +345,6 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_stru
 void handleAlarms(){
   
 }
-
 
 
 
