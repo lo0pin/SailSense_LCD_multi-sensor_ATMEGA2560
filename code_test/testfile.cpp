@@ -280,7 +280,7 @@ void updateMenuSystem(uint8_t button){
   
 }
 
-void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_var){
+void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_struct, uint8_t displaymode){
   dis.clearDisplay();
   dis.setCursor(0, 0);
   
@@ -290,6 +290,7 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_var)
   dis.println(bme_struct.humi,1);
   dis.print(F("P:   "));
   dis.println(bme_struct.baro,1);
+  
 
   
 
@@ -301,5 +302,6 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_var)
 void handleAlarms(){
   
 }
+
 
 
