@@ -36,7 +36,7 @@ constexpr uint8_t MPU9250_ADDR =      0x69;
 extern uint8_t buttoninput;
 
 extern unsigned long globaltimer;
-extern uint16_t delaytime;
+extern uint16_t delaytime_for_loop;
 
 extern uint8_t old_hour;
 extern uint8_t old_minute;
@@ -77,6 +77,7 @@ void renderDisplay_Setup(Adafruit_SSD1306& dis);
 void renderDisplay_everyLoop(Adafruit_SSD1306& dis);
 
 void handleAlarms();
+
 
 
 
