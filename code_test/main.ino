@@ -18,6 +18,7 @@ void loop() {
   BMEData current_bme;
   BMEData mittelw_bme;
   IMUData current_imu;
+
   
   if (millis() - globaltimer > delaytime_for_loop) {
     buttoninput = updateButtons();
@@ -25,6 +26,7 @@ void loop() {
     current_bme = updateSensors(bme);
     current_imu = updateNavigation(imu); 
     current_display = updateMenuSystem(buttoninput); 
+    renderDisplay(display, current_bme, current_imu, right_now, current_display); 
     /*
     mittelw_bme.temp += current_bme.temp;
     mittelw_bme.humi += current_bme.humi;
@@ -34,6 +36,24 @@ void loop() {
     mittelw_bme.humi /= 2;
     mittelw_bme.baro /= 2;
      */
+    
+#if DEBUG
+    Serial.print(F("current_bme\t"));
+    Serial.print(current_bme.temp);
+    Serial.print(F("\t"));
+    Serial.print(current_bme.humi);  
+    Serial.print(F("\t"));
+    Serial.println(current_bme.baro);  
+  
+    Serial.print(F("current_imu\t"));
+    Serial.print(current_imu.roll);
+    Serial.print(F("\t"));
+    Serial.print(current_imu.pitch);  
+    Serial.print(F("\t"));
+    Serial.println(current_imu.heading); 
+  
+#endif     
+    
     globaltimer = millis();
 
   }
@@ -41,7 +61,7 @@ void loop() {
 
   
   
-  renderDisplay(display, current_bme, current_imu, right_now, current_display); 
+
   handleAlarms();
 }
 
