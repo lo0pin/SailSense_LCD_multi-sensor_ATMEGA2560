@@ -16,17 +16,13 @@
 
 #define booting_display_message_delay 300
 
-uint16_t delaytime = 300;
+uint16_t delaytime_for_loop = 300;
 unsigned long globaltimer =0;
 
-/*
 uint8_t old_hour = 99;
 uint8_t old_minute = 99;
-*/
-
 
 uint8_t buttoninput = 1;
-
 uint8_t current_display = 0;
 
 /////////////////////////////////////////
@@ -344,6 +340,7 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_stru
 void handleAlarms(){
   
 }
+
 
 
 
