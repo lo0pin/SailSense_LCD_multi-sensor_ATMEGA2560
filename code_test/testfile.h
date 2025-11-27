@@ -62,7 +62,7 @@ struct IMUData{
 /*********************************************
 Funktionsdeklarationen
 *********************************************/ 
-void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306& oled_var, MPU9250_WE& imu_var);
+void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306& display_var, MPU9250_WE& imu_var);
 bool initBME280(Adafruit_BME280& bme_var);
 bool initRTC(RTC_DS3231& rtc_var);
 bool initDISPLAY(Adafruit_SSD1306& display_var);
@@ -77,6 +77,7 @@ void renderDisplay_Setup(Adafruit_SSD1306& dis);
 void renderDisplay_everyLoop(Adafruit_SSD1306& dis);
 
 void handleAlarms();
+
 
 
 
