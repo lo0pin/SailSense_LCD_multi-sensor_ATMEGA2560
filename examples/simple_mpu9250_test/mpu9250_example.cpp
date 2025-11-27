@@ -5,7 +5,7 @@ Hinweis zur Realität: Der MPU9250 ist EoL (wird aber noch gut verkauft). Die Be
 API-Hinweis: Die MPU9250_WE-Library hat viele Funktionen (≈59). Kleinigkeiten im Funktionsnamen können je nach Version minimal anders heißen — falls der Compiler meckert: im Library-Beispielordner nachschlagen und 1:1 anpassen. 
 
 Verdrahtung (I2C, Standard-Breakout)
-====================================
+
 VCC → 3.3 V (manche Boards haben Regler, aber 3.3 V ist sauberer)
 GND → GND
 SDA → SDA
@@ -18,10 +18,8 @@ Library installieren
 ====================
 Arduino IDE → Bibliotheksverwaltung → “MPU9250_WE” suchen und installieren. 
 
-
-
  * MPU9250_WE Showcase Sketch
- * 
+ ============================
  * Zeigt viele interessante Funktionen des MPU9250:
  *  1) Verbindungstest / WHO_AM_I
  *  2) Rohdaten + SI-Einheiten (g, deg/s, µT, °C)
