@@ -37,8 +37,9 @@ void loop() {
   }
 
 
-  updateNavigation();
-  updateMenuSystem(buttoninput);
-  renderDisplay(display, current_bme);
+  updateNavigation(imu); //TODO
+  updateMenuSystem(buttoninput); //TODO
+  renderDisplay(display, current_bme); 
   handleAlarms();
 }
+
