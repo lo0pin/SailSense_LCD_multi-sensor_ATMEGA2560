@@ -8,18 +8,23 @@ MPU9250_WE imu =    MPU9250_WE(MPU9250_ADDR);
 
 void setup() {
   systemInit(bme, rtc, display, imu);
+  renderDisplay_Setup(display);
 }
+
 
 void loop() {
   DateTime right_now = rtc.now();
+  renderDisplay_everyLoop(display);
   BMEData current_bme;
   BMEData mittelw_bme;
-  uint8_t buttoninput;
-  if (millis() - globaltimer > delaytime) {
+  IMUData current_imu;
+  
+  if (millis() - globaltimer > delaytime_for_loop) {
     buttoninput = updateButtons();
 
     current_bme = updateSensors(bme);
-    
+    current_imu = updateNavigation(imu); 
+    current_display = updateMenuSystem(buttoninput); 
     /*
     mittelw_bme.temp += current_bme.temp;
     mittelw_bme.humi += current_bme.humi;
@@ -29,17 +34,15 @@ void loop() {
     mittelw_bme.humi /= 2;
     mittelw_bme.baro /= 2;
      */
-
-    
-    
     globaltimer = millis();
 
   }
 
 
-  updateNavigation(imu); //TODO
-  updateMenuSystem(buttoninput); //TODO
-  renderDisplay(display, current_bme); 
+  
+  
+  renderDisplay(display, current_bme, current_imu, right_now, current_display); 
   handleAlarms();
 }
+
 
