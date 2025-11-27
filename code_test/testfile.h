@@ -65,8 +65,9 @@ uint8_t updateButtons();
 BMEData updateSensors(Adafruit_BME280& bme_var);
 IMUData updateNavigation(MPU9250_WE& imu_var);
 void updateMenuSystem(uint8_t button);
-void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_struct);
+void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_struct, uint8_t displaymode);
 void handleAlarms();
+
 
 
 
