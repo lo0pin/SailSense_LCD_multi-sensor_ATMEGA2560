@@ -18,7 +18,12 @@
 
 uint16_t delaytime = 300;
 unsigned long globaltimer =0;
-uint16_t minite = 0;
+
+/*
+uint8_t old_hour = 99;
+uint8_t old_minute = 99;
+*/
+
 
 uint8_t buttoninput = 1;
 
@@ -339,6 +344,7 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_stru
 void handleAlarms(){
   
 }
+
 
 
 
