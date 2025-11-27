@@ -8,6 +8,10 @@
 21:21:27.494 ->   0x76  (ACK)
 ****************************/
 
+
+/*********************************************
+Globale Konstanten
+*********************************************/
 #define DEBUG 1
 #define SETTIMEONCE 0
 
@@ -29,16 +33,13 @@ constexpr uint8_t  SCREEN_ADDRESS =  0x3C;    // I2C-Adresse deines Displays
 constexpr uint8_t MPU9250_ADDR =      0x69;
 //constexpr uint8_t INT_PIN           2          // optional, falls INT verbunden ist
 
-// Funktionsdeklarationen
-void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306& oled_var, MPU9250_WE& imu_var);
-bool initBME280(Adafruit_BME280& bme_var);
-bool initRTC(RTC_DS3231& rtc_var);
-bool initDISPLAY(Adafruit_SSD1306& display_var);
-bool initIMU(MPU9250_WE& imu_var);
-
 extern unsigned long globaltimer;
 extern uint16_t delaytime;
 extern uint16_t minite;
+
+/*********************************************
+Typen
+*********************************************/ 
 
 struct BMEData{
   float temp;
@@ -52,10 +53,19 @@ struct IMUData{
   float heading; //Kompasskurs
 };
 
+/*********************************************
+Funktionsdeklarationen
+*********************************************/ 
+void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306& oled_var, MPU9250_WE& imu_var);
+bool initBME280(Adafruit_BME280& bme_var);
+bool initRTC(RTC_DS3231& rtc_var);
+bool initDISPLAY(Adafruit_SSD1306& display_var);
+bool initIMU(MPU9250_WE& imu_var);
 uint8_t updateButtons();
 BMEData updateSensors(Adafruit_BME280& bme_var);
 IMUData updateNavigation(MPU9250_WE& imu_var);
 void updateMenuSystem(uint8_t button);
 void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct);
 void handleAlarms();
+
 
