@@ -23,14 +23,17 @@ uint16_t minite = 0;
 
 void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306& display_var, MPU9250_WE& imu_var){
 #if DEBUG
+  /////SERIAL
   Serial.begin(9600);
   delay(initialize_delay);
   // Hinweis: on Mega/2560 ist while(!Serial) normalerweise nicht nötig und kann blockieren.
   while (!Serial) { /* warten, falls nötig */ }
 #endif
+  /////WIRE
   Wire.begin();
   Wire.setClock(400000);   
   delay(initialize_delay);
+  /////BME
   while(!initBME280(bme_var)){
 #if DEBUG
     Serial.println("BME-Sensor nicht gefunden");
@@ -41,6 +44,7 @@ void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306&
     Serial.println("BME-Sensor initialisiert!");
 #endif 
   delay(initialize_delay);
+  /////RTC
   while(!initRTC(rtc_var)){
 #if DEBUG
     Serial.println(F("FEHLER: DS3231-RTC nicht gefunden. Wiring/Adresse prüfen!"));
@@ -51,6 +55,7 @@ void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306&
     Serial.println(F("DS3231-RTC initialisiert!"));
 #endif 
   delay(initialize_delay);
+  /////DISPLAY
   while(!initDISPLAY(display_var)){
 #if DEBUG    
     Serial.println(F("SSD1306-Display nicht gefunden. Check Verkabelung/Adresse!"));
@@ -61,6 +66,7 @@ void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306&
 #if DEBUG    
     Serial.println(F("SSD1306-Display initialisiert!"));
 #endif 
+  /////IMU
   while(!initIMU(imu_var)){
 #if DEBUG    
     Serial.println(F("FEHLER: MPU9250-Sensor antwortet nicht. Verkabelung/Adresse prüfen!"));
@@ -70,9 +76,8 @@ void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306&
 #if DEBUG    
     Serial.println(F("MPU9250-Sensor initialisiert!"));
 #endif     
-/*
-*/  
-  //Tasterpins initialisieren
+
+  /////TASTERPINS  
   for (int i = 8; i<=12; ++i){
     pinMode(i, INPUT_PULLUP);
   }
@@ -80,6 +85,8 @@ void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306&
   Serial.println(F("Tasterpins initialisiert!"));
 #endif 
 }
+
+/////////////////////////////////////////
 
 bool initBME280(Adafruit_BME280& bme_var) {
   // Erst Adresse 0x76 versuchen
@@ -141,6 +148,8 @@ bool initIMU(MPU9250_WE& imu_var){
     imu_var.setGyrRange(MPU9250_GYRO_RANGE_500);   // ausreichend dynamisch
     // Mag: full-scale wird intern gesetzt; wir wählen Betriebsmodus:
     imu_var.setMagOpMode(AK8963_CONT_MODE_100HZ);  // kontinuierlich, 100 Hz
+
+    imu_var.autoOffsets();  // Kalibrieren
     return true;
   }
   return false;
@@ -171,8 +180,23 @@ BMEData updateSensors(Adafruit_BME280& bme_var){
 
 //////////////////////////////////
 
-void updateNavigation(){
-  
+IMUData updateNavigation(MPU9250_WE& imu_var){
+  IMUData result;
+  //Lageerkennung 
+  xyzFloat acc = imu_var.getGValues();
+  float roll = atan2(acc.y, acc.z) * 180 / PI;
+  float pitch = atan2(-acc.x, sqrt(acc.y*acc.y + acc.z*acc.z)) * 180 / PI;
+  //Heading
+  xyzFloat mag = imu.getMagValues();
+  float heading = atan2(mag.y, mag.x) * 180 / PI;
+  if (heading < 0) heading += 360;
+  //if (heading >360) heading -= 360;
+
+  result.roll = roll; // Roll (Krängung)
+  result.pitch = pitch; // Pitch (Stampfen)
+  result.heading = heading; //Kompasskurs
+
+  return result;
 }
 
 //////////////////////////////////
@@ -202,3 +226,4 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct){
 void handleAlarms(){
   
 }
+
