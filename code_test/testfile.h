@@ -37,7 +37,9 @@ extern uint8_t buttoninput;
 
 extern unsigned long globaltimer;
 extern uint16_t delaytime;
-extern uint16_t minite;
+
+extern uint8_t old_hour;
+extern uint8_t old_minute;
 
 extern uint8_t current_display;
 
@@ -75,6 +77,7 @@ void renderDisplay_Setup(Adafruit_SSD1306& dis);
 void renderDisplay_everyLoop(Adafruit_SSD1306& dis);
 
 void handleAlarms();
+
 
 
 
