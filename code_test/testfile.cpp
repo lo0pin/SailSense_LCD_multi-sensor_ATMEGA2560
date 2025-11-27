@@ -14,10 +14,15 @@
 #define initialize_delay 20
 #define initialize_fail_delay 1000
 
+#define booting_display_message_delay 300
+
 uint16_t delaytime = 300;
 unsigned long globaltimer =0;
 uint16_t minite = 0;
 
+uint8_t buttoninput = 1;
+
+uint8_t current_display = 0;
 
 /////////////////////////////////////////
 
@@ -84,6 +89,7 @@ void systemInit(Adafruit_BME280& bme_var, RTC_DS3231& rtc_var, Adafruit_SSD1306&
 #if DEBUG    
   Serial.println(F("Tasterpins initialisiert!"));
 #endif 
+  
 }
 
 /////////////////////////////////////////
@@ -276,11 +282,36 @@ IMUData updateNavigation(MPU9250_WE& imu_var){
 
 //////////////////////////////////
 
-void updateMenuSystem(uint8_t button){
+uint8_t updateMenuSystem(uint8_t button){
   
 }
 
-void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_struct, uint8_t displaymode){
+void renderDisplay_Setup(Adafruit_SSD1306& dis){
+  dis.clearDisplay();
+
+  display.setTextSize(2);
+  display.println(F("SailSense"));
+  
+  display.setTextSize(1);
+  display.println(F("by Julian Kampitsch"));
+  display.println(F("2025"));
+  display.println(F(""));
+  display.print(F("booting"));
+  dis.display();
+  
+  for (uint8_t i = 0; i<3; ++i){
+    delay(booting_display_message_delay);
+    display.print(F("."));
+    dis.display();    
+  }
+}
+
+void renderDisplay_everyLoop(Adafruit_SSD1306& dis){
+  dis.clearDisplay();
+  dis.setCursor(0, 0);
+}
+
+void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_struct, DateTime dt, uint8_t displaymode){
   dis.clearDisplay();
   dis.setCursor(0, 0);
   
@@ -290,18 +321,25 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_stru
   dis.println(bme_struct.humi,1);
   dis.print(F("P:   "));
   dis.println(bme_struct.baro,1);
-  
 
-  
+  dis.print(F("T:   "));
+  dis.println(bme_struct.temp,1);
+  dis.print(F("H:   "));
+  dis.println(bme_struct.humi,1);
+  dis.print(F("P:   "));
+  dis.println(bme_struct.baro,1);
 
   dis.display();
 }
+
+
 
 //////////////////////////////////
 
 void handleAlarms(){
   
 }
+
 
 
 
