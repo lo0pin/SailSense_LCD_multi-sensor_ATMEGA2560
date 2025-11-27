@@ -266,8 +266,8 @@ IMUData updateNavigation(MPU9250_WE& imu_var){
   IMUData result;
   //Lageerkennung 
   xyzFloat acc = imu_var.getGValues();
-  float roll = atan2(acc.y, acc.z) * 180 / PI;
-  float pitch = atan2(-acc.x, sqrt(acc.y*acc.y + acc.z*acc.z)) * 180 / PI;
+  float pitch = atan2(acc.y, acc.z) * 180 / PI;
+  float roll = atan2(-acc.x, sqrt(acc.y*acc.y + acc.z*acc.z)) * 180 / PI;
   //Heading
   xyzFloat mag = imu_var.getMagValues();
   float heading = atan2(mag.y, mag.x) * 180 / PI;
@@ -327,10 +327,10 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_stru
   dis.println(bme_struct.baro,1);
 
   dis.print(F("R:   "));
-  if (imu_struct.roll<0) dis.print(F(" "));
+  if (imu_struct.roll>=0) dis.print(F(" "));
   dis.println(imu_struct.roll,1);
   dis.print(F("P:   "));
-  if (imu_struct.pitch<0) dis.print(F(" "));
+  if (imu_struct.pitch>=0) dis.print(F(" "));
   dis.println(imu_struct.pitch,1);
   dis.print(F("M:   "));
   dis.println(imu_struct.heading,1);
