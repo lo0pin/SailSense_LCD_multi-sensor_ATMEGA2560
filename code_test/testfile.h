@@ -46,10 +46,16 @@ struct BMEData{
   float baro;
 };
 
+struct IMUData{
+  float roll; // Roll (Krängung)
+  float pitch; // Pitch (Stampfen)
+  float heading; //Kompasskurs
+};
 
 uint8_t updateButtons();
 BMEData updateSensors(Adafruit_BME280& bme_var);
-void updateNavigation();
+IMUData updateNavigation(MPU9250_WE& imu_var);
 void updateMenuSystem(uint8_t button);
 void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct);
 void handleAlarms();
+
