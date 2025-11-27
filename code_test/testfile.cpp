@@ -156,6 +156,14 @@ bool initIMU(MPU9250_WE& imu_var){
     // Mag: full-scale wird intern gesetzt; wir wählen Betriebsmodus:
     imu_var.setMagOpMode(AK8963_CONT_MODE_100HZ);  // kontinuierlich, 100 Hz
 
+    // WICHTIG: Magnetometer explizit aktivieren
+    imu_var.initMagnetometer();  // <- Diese Zeile hinzufügen!
+    
+    // Mag: Betriebsmodus setzen
+    imu_var. setMagOpMode(AK8963_CONT_MODE_100HZ); 
+     
+    delay(100);
+    
     imu_var.autoOffsets();  // Kalibrieren
     return true;
   }
@@ -271,6 +279,11 @@ IMUData updateNavigation(MPU9250_WE& imu_var){
   //Heading
   xyzFloat mag = imu_var.getMagValues();
   float heading = atan2(mag.y, mag.x) * 180 / PI;
+  if (heading >180) {
+    heading -= 180;
+  } else if (heading < 180){
+    heading += 180;
+  }
   if (heading < 0) heading += 360;
   //if (heading >360) heading -= 360;
 
@@ -345,9 +358,3 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_stru
 void handleAlarms(){
   
 }
-
-
-
-
-
-
