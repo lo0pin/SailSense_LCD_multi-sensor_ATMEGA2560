@@ -315,6 +315,9 @@ void renderDisplay_everyLoop(Adafruit_SSD1306& dis){
 void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_struct, DateTime dt, uint8_t displaymode){
   dis.clearDisplay();
   dis.setCursor(0, 0);
+
+  dis.print(dt.hour()); dis.print(F(":")); dis.print(dt.minute()); dis.print(F(":")); dis.print(dt.second()); dis.print(F("   ")); 
+  dis.print(dt.day()); dis.print(F(".")); dis.print(dt.month()); dis.print(F(".")); dis.println(dt.year()); 
   
   dis.print(F("T:   "));
   dis.println(bme_struct.temp,1);
@@ -323,12 +326,12 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_stru
   dis.print(F("P:   "));
   dis.println(bme_struct.baro,1);
 
-  dis.print(F("T:   "));
-  dis.println(bme_struct.temp,1);
-  dis.print(F("H:   "));
-  dis.println(bme_struct.humi,1);
+  dis.print(F("R:   "));
+  dis.println(imu_struct.roll,1);
   dis.print(F("P:   "));
-  dis.println(bme_struct.baro,1);
+  dis.println(imu_struct.pitch,1);
+  dis.print(F("M:   "));
+  dis.println(imu_struct.heading,1);
 
   dis.display();
 }
@@ -340,6 +343,7 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_stru
 void handleAlarms(){
   
 }
+
 
 
 
