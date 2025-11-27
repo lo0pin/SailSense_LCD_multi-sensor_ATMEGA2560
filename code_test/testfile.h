@@ -33,9 +33,13 @@ constexpr uint8_t  SCREEN_ADDRESS =  0x3C;    // I2C-Adresse deines Displays
 constexpr uint8_t MPU9250_ADDR =      0x69;
 //constexpr uint8_t INT_PIN           2          // optional, falls INT verbunden ist
 
+extern uint8_t buttoninput;
+
 extern unsigned long globaltimer;
 extern uint16_t delaytime;
 extern uint16_t minite;
+
+extern uint8_t current_display;
 
 /*********************************************
 Typen
@@ -65,8 +69,13 @@ uint8_t updateButtons();
 BMEData updateSensors(Adafruit_BME280& bme_var);
 IMUData updateNavigation(MPU9250_WE& imu_var);
 uint8_t updateMenuSystem(uint8_t button);
-void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_struct, uint8_t displaymode);
+void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_struct, DateTime dt, uint8_t displaymode);
+
+void renderDisplay_Setup(Adafruit_SSD1306& dis);
+void renderDisplay_everyLoop(Adafruit_SSD1306& dis);
+
 void handleAlarms();
+
 
 
 
