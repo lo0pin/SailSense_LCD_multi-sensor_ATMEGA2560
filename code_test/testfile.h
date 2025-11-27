@@ -77,12 +77,3 @@ void renderDisplay_Setup(Adafruit_SSD1306& dis);
 void renderDisplay_everyLoop(Adafruit_SSD1306& dis);
 
 void handleAlarms();
-
-
-
-
-
-
-
-
-
