@@ -179,6 +179,81 @@ BMEData updateSensors(Adafruit_BME280& bme_var){
 }
 
 //////////////////////////////////
+/*
+HEADING (Kompasskurs)
+=====================
+0° bis 360°  (oder -180° bis +180°)
+
+       0° / 360°
+      (Norden)
+           |
+           |
+270° ------+------ 90°
+(Westen)   |     (Osten)
+           |
+         180°
+       (Süden)
+
+Heading	Richtung
+0°	    Norden
+45°	    Nordosten
+90°	    Osten
+135°	  Südosten
+180°	  Süden
+225°	  Südwesten
+270°	  Westen
+315°	  Nordwesten
+
+
+ROLL (Krängung)
+===============
+-180° bis +180°  (oder 0° bis 360°)
+
+     +90°
+      |
+      | (links hoch)
+      |
+------+------ 0° (waagrecht)
+      |
+      | (rechts hoch)
+      |
+    -90°
+
+Roll	Bedeutung	                    Visualisierung
+0°	  Perfekt waagrecht	            ───
++15°	Leichte Neigung nach links	  ╱──
++45°	Starke Neigung nach links	    │╱
++90°	Auf linker Seite liegend	    │
+-15°	Leichte Neigung nach rechts	  ──╲
+-45°	Starke Neigung nach rechts	  ╲│
+-90°	Auf rechter Seite liegend	    │
+±180°	Auf dem Kopf	                ───
+
+
+PITCH (Stampfen)
+================
+-90° bis +90°  (oder -180° bis +180°)
+
+     +90°
+      |
+      | (Bug/Nase hoch)
+      |
+------+------ 0° (waagrecht)
+      |
+      | (Bug/Nase runter)
+      |
+    -90°
+
+Pitch	Bedeutung	                                  Visualisierung
+0°	  Horizontal	                                →
++10°	Bug leicht oben	                            ↗
++30°	Bug stark oben (Steigflug/Welle)	          ⭱
++90°	Senkrecht nach oben	                        ↑
+-10°	Bug leicht unten	                          ↘
+-30°	Bug stark unten (Sturzflug/Wellenabfahrt)	  ⭳
+-90°	Senkrecht nach unten	                      ↓
+
+*/
 
 IMUData updateNavigation(MPU9250_WE& imu_var){
   IMUData result;
@@ -205,7 +280,7 @@ void updateMenuSystem(uint8_t button){
   
 }
 
-void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct){
+void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_var){
   dis.clearDisplay();
   dis.setCursor(0, 0);
   
@@ -226,4 +301,5 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct){
 void handleAlarms(){
   
 }
+
 
