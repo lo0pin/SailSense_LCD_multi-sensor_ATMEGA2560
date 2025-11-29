@@ -1,4 +1,5 @@
 /////////////////////////////////////////
+
 #include "testfile.h"
 
 #include <Wire.h>
@@ -8,6 +9,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <MPU9250_WE.h>
+
 /////////////////////////////////////////
 
 
@@ -206,7 +208,7 @@ bool initIMU(MPU9250_WE& imu_var){
 uint8_t updateButtons(){
   for (uint8_t i= 8; i<=12; ++i){
     if (digitalRead(i)==0){
-      return i-7;
+      return i-8;
     }
   }
   return 0;
@@ -320,27 +322,52 @@ Pitch Bedeutung                                   Visualisierung
 
 IMUData updateNavigation(MPU9250_WE& imu_var){
   IMUData result;
-  //Lageerkennung 
-  xyzFloat acc = imu_var.getGValues();
-  float pitch = atan2(acc.y, acc.z) * 180 / PI;
-  float roll = atan2(-acc.x, sqrt(acc.y*acc.y + acc.z*acc.z)) * 180 / PI;
-  //Heading
-  xyzFloat mag = imu_var.getMagValues();
-  float heading = atan2(mag.y, mag.x) * 180 / PI;
-  if (heading >180) {
-    heading -= 180;
-  } else if (heading < 180){
-    heading += 180;
-  }
-  if (heading < 0) heading += 360;
-  //if (heading >360) heading -= 360;
 
-  result.roll = roll; // Roll (Krängung)
-  result.pitch = pitch; // Pitch (Stampfen)
-  result.heading = heading; //Kompasskurs
+  // --- Sensorwerte holen ---
+  xyzFloat acc = imu_var.getGValues();
+  xyzFloat mag = imu_var.getMagValues();
+
+  // === Achsen-Mapping gemäß deiner Hardware ===
+  // Board-Aufdruck: Y zeigt nach vorne (Heading), X nach rechts
+  float Ax = acc.y;   // Vorwärts (North)
+  float Ay = acc.x;   // Rechts   (East)
+  float Az = acc.z;   // Vertikal (Up/Down)
+
+  float Mx = mag.y;   // Magnetfeld in Vorwärtsrichtung
+  float My = mag.x;   // Magnetfeld nach rechts
+  float Mz = mag.z;   // Magnetfeld vertikal
+
+  // --- Lage (Roll & Pitch) in RAD ---
+  float roll  = atan2(Ay, Az);                         // Roll um Vorwärtsachse
+  float pitch = atan2(-Ax, sqrt(Ay*Ay + Az*Az));       // Pitch (Nase hoch/runter)
+
+  // --- Tilt-Kompensation Magnetometer ---
+  float cosRoll  = cos(roll);
+  float sinRoll  = sin(roll);
+  float cosPitch = cos(pitch);
+  float sinPitch = sin(pitch);
+
+  // In horizontale Ebene transformieren:
+  float Xh = Mx * cosPitch + Mz * sinPitch;
+  float Yh = Mx * sinRoll * sinPitch + My * cosRoll - Mz * sinRoll * cosPitch;
+
+  // --- Heading berechnen ---
+  // Heading = atan2(East, North)
+  float headingRad = atan2(Yh, Xh);
+  float headingDeg = headingRad * 180.0f / PI;
+  if (headingDeg < 0) headingDeg += 360.0f;
+
+  // Wenn Drehrichtung invertiert ist (Test!):
+  // headingDeg = fmod(360.0f - headingDeg, 360.0f);
+
+  // --- Ergebnisse in Grad ins Struct ---
+  result.roll    = roll  * 180.0f / PI;    // Roll (Krängung)
+  result.pitch   = pitch * 180.0f / PI;    // Pitch (Stampfen)
+  result.heading = headingDeg;             // Kompasskurs
 
   return result;
 }
+
 
 //////////////////////////////////
 
