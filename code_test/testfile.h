@@ -1,5 +1,6 @@
 #pragma once
 
+
 /****************************
 21:21:27.426 ->   0x3C  (ACK)
 21:21:27.461 ->   0x57  (ACK)
@@ -17,6 +18,8 @@ Globale Konstanten
 
 // Bibliotheken einbinden, damit die Typen vollständig sind wenn main.ino
 // die globalen Objekte (z.B. Adafruit_BME280 bme;) deklariert.
+
+
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
@@ -24,6 +27,7 @@ Globale Konstanten
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <MPU9250_WE.h>
+
 
 constexpr uint8_t  SCREEN_WIDTH =    128;
 constexpr uint8_t  SCREEN_HEIGHT =   64;
