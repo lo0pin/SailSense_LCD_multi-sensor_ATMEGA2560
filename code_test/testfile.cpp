@@ -18,12 +18,41 @@
 
 uint16_t delaytime_for_loop = 300;
 unsigned long globaltimer =0;
+uint8_t counter_for_measurment_within_loop = 0;
 
 uint8_t old_hour = 99;
 uint8_t old_minute = 99;
+uint8_t mittelwert_divisor = 0;
 
 uint8_t buttoninput = 1;
 uint8_t current_display = 0;
+uint8_t max_number_of_displays = 2;
+
+/////////////////////////////////////////
+
+BMEData hourly_summe_bme;
+BMEData mittelw_bme;
+
+/////////////////////////////////////////
+
+float temp_messungen[array_len] = {
+  -1, -1, -1, -1, -1, -1,
+  -1, -1, -1, -1, -1, -1,
+  -1, -1, -1, -1, -1, -1,
+  -1, -1, -1, -1, -1, -1
+};
+float humid_messungen[array_len] = {
+  -1, -1, -1, -1, -1, -1,
+  -1, -1, -1, -1, -1, -1,
+  -1, -1, -1, -1, -1, -1,
+  -1, -1, -1, -1, -1, -1
+};
+float baro_messungen[array_len] = {
+  -1, -1, -1, -1, -1, -1,
+  -1, -1, -1, -1, -1, -1,
+  -1, -1, -1, -1, -1, -1,
+  -1, -1, -1, -1, -1, -1
+};
 
 /////////////////////////////////////////
 
@@ -176,10 +205,11 @@ bool initIMU(MPU9250_WE& imu_var){
 
 uint8_t updateButtons(){
   for (uint8_t i= 8; i<=12; ++i){
-    if (digitalRead(i)==1){
-      return i;
+    if (digitalRead(i)==0){
+      return i-7;
     }
   }
+  return 0;
 }
 
 //////////////////////////////////
@@ -191,6 +221,24 @@ BMEData updateSensors(Adafruit_BME280& bme_var){
   m.humi = bme_var.readHumidity();            // %
   m.baro = bme_var.readPressure() / 100;    // hPa   
   return m;       
+}
+
+BMEData get_mittelwert(BMEData& bme_now){
+  BMEData result;
+  if (mittelwert_divisor == 0){
+    hourly_summe_bme.temp = bme_now.temp;
+    hourly_summe_bme.humi = bme_now.humi;
+    hourly_summe_bme.baro = bme_now.baro;
+  } else {
+    hourly_summe_bme.temp += bme_now.temp;
+    hourly_summe_bme.humi += bme_now.humi;
+    hourly_summe_bme.baro += bme_now.baro;        
+  }
+  mittelwert_divisor++;
+  result.temp = hourly_summe_bme.temp/mittelwert_divisor;
+  result.humi = hourly_summe_bme.humi/mittelwert_divisor;
+  result.baro = hourly_summe_bme.baro/mittelwert_divisor; 
+  return result; 
 }
 
 //////////////////////////////////
@@ -297,7 +345,17 @@ IMUData updateNavigation(MPU9250_WE& imu_var){
 //////////////////////////////////
 
 uint8_t updateMenuSystem(uint8_t button){
-  
+  int result;
+  if (button == 1) {
+    result = (current_display+1)%max_number_of_displays;
+  } else if (button == 2) {
+    result = (current_display+max_number_of_displays-1)%max_number_of_displays;
+  }
+#if DEBUG
+  Serial.print(F("Display:\t"));
+  Serial.println(result);
+#endif
+  return result;
 }
 
 void renderDisplay_Setup(Adafruit_SSD1306& dis){
@@ -320,33 +378,40 @@ void renderDisplay_Setup(Adafruit_SSD1306& dis){
   }
 }
 
+/*
 void renderDisplay_everyLoop(Adafruit_SSD1306& dis){
   dis.clearDisplay();
   dis.setCursor(0, 0);
 }
+*/
+
 
 void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_struct, DateTime dt, uint8_t displaymode){
   dis.clearDisplay();
   dis.setCursor(0, 0);
 
-  dis.print(dt.hour()); dis.print(F(":")); dis.print(dt.minute()); dis.print(F(":")); dis.print(dt.second()); dis.print(F("   ")); 
-  dis.print(dt.day()); dis.print(F(".")); dis.print(dt.month()); dis.print(F(".")); dis.println(dt.year()); 
-  
-  dis.print(F("T:   "));
-  dis.println(bme_struct.temp,1);
-  dis.print(F("H:   "));
-  dis.println(bme_struct.humi,1);
-  dis.print(F("P:   "));
-  dis.println(bme_struct.baro,1);
 
-  dis.print(F("R:   "));
-  if (imu_struct.roll>=0) dis.print(F(" "));
-  dis.println(imu_struct.roll,1);
-  dis.print(F("P:   "));
-  if (imu_struct.pitch>=0) dis.print(F(" "));
-  dis.println(imu_struct.pitch,1);
-  dis.print(F("M:   "));
-  dis.println(imu_struct.heading,1);
+  if(1){
+    dis.print(dt.hour()); dis.print(F(":")); dis.print(dt.minute()); dis.print(F(":")); dis.print(dt.second()); dis.print(F("   ")); 
+    dis.print(dt.day()); dis.print(F(".")); dis.print(dt.month()); dis.print(F(".")); dis.println(dt.year()); 
+    
+    dis.print(F("T:   "));
+    dis.println(bme_struct.temp,1);
+    dis.print(F("H:   "));
+    dis.println(bme_struct.humi,1);
+    dis.print(F("P:   "));
+    dis.println(bme_struct.baro,1);
+  
+    dis.print(F("R:   "));
+    if (imu_struct.roll>=0) dis.print(F(" "));
+    dis.println(imu_struct.roll,1);
+    dis.print(F("P:   "));
+    if (imu_struct.pitch>=0) dis.print(F(" "));
+    dis.println(imu_struct.pitch,1);
+    dis.print(F("M:   "));
+    dis.println(imu_struct.heading,1);    
+  }
+
 
   dis.display();
 }
