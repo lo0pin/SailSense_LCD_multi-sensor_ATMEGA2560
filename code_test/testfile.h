@@ -12,7 +12,7 @@
 /*********************************************
 Globale Konstanten
 *********************************************/
-#define DEBUG 1
+#define DEBUG 0
 #define SETTIMEONCE 0
 
 // Bibliotheken einbinden, damit die Typen vollständig sind wenn main.ino
@@ -33,15 +33,33 @@ constexpr uint8_t  SCREEN_ADDRESS =  0x3C;    // I2C-Adresse deines Displays
 constexpr uint8_t MPU9250_ADDR =      0x69;
 //constexpr uint8_t INT_PIN           2          // optional, falls INT verbunden ist
 
+constexpr uint8_t array_len = 24;
+
 extern uint8_t buttoninput;
 
 extern unsigned long globaltimer;
 extern uint16_t delaytime_for_loop;
+extern uint8_t counter_for_measurment_within_loop;
 
 extern uint8_t old_hour;
 extern uint8_t old_minute;
+extern uint8_t mittelwert_divisor;
+
+
 
 extern uint8_t current_display;
+extern uint8_t max_number_of_displays;
+
+
+
+
+/*********************************************
+Container
+*********************************************/ 
+extern float  temp_messungen[array_len];
+extern float  humid_messungen[array_len];
+extern float  baro_messungen[array_len];
+
 
 /*********************************************
 Typen
@@ -59,6 +77,9 @@ struct IMUData{
   float heading; //Kompasskurs
 };
 
+extern BMEData hourly_summe_bme;
+extern BMEData mittelw_bme;
+
 /*********************************************
 Funktionsdeklarationen
 *********************************************/ 
@@ -69,6 +90,7 @@ bool initDISPLAY(Adafruit_SSD1306& display_var);
 bool initIMU(MPU9250_WE& imu_var);
 uint8_t updateButtons();
 BMEData updateSensors(Adafruit_BME280& bme_var);
+BMEData get_mittelwert(BMEData& bme_now);
 IMUData updateNavigation(MPU9250_WE& imu_var);
 uint8_t updateMenuSystem(uint8_t button);
 void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_struct, DateTime dt, uint8_t displaymode);
