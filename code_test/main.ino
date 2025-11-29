@@ -1,12 +1,12 @@
 #include "testfile.h"
 
-
 Adafruit_BME280     bme; // I2C
 RTC_DS3231          rtc;
 Adafruit_SSD1306    display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 MPU9250_WE imu =    MPU9250_WE(MPU9250_ADDR);
 
 void setup() {
+  Serial.begin(9600);
   systemInit(bme, rtc, display, imu);
   renderDisplay_Setup(display);
 }
@@ -76,4 +76,16 @@ void loop() {
   }
   
   handleAlarms();
+/*
+  Serial.print("8\t");
+  Serial.println(digitalRead(8));
+  Serial.print("9\t");
+  Serial.println(digitalRead(9));
+  Serial.print("10\t");
+  Serial.println(digitalRead(10));
+  Serial.print("11\t");
+  Serial.println(digitalRead(11));
+  delay(1000);
+ */
+
 }
