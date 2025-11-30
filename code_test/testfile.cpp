@@ -28,7 +28,7 @@ uint8_t mittelwert_divisor = 0;
 
 uint8_t buttoninput = 1;
 uint8_t current_display = 0;
-uint8_t max_number_of_displays = 2;
+uint8_t max_number_of_displays = 5;
 
 /////////////////////////////////////////
 
@@ -55,6 +55,16 @@ float baro_messungen[array_len] = {
   -1, -1, -1, -1, -1, -1,
   -1, -1, -1, -1, -1, -1
 };
+
+float  mittelwert_magnetkurse[mag_mittelwerte] = {
+  -1, -1, -1, -1, -1, 
+  -1, -1, -1, -1, -1,
+  -1, -1, -1, -1, -1, 
+  -1, -1, -1, -1, -1
+};
+
+uint8_t mag_mittelwert_index = 0;
+uint16_t mag_geglaettet = 0;
 
 /////////////////////////////////////////
 
@@ -203,8 +213,6 @@ bool initIMU(MPU9250_WE& imu_var){
 
 //////////////////////////////////
 
-
-
 uint8_t updateButtons(){
   for (uint8_t i= 8; i<=12; ++i){
     if (digitalRead(i)==0){
@@ -244,81 +252,6 @@ BMEData get_mittelwert(BMEData& bme_now){
 }
 
 //////////////////////////////////
-/*
-HEADING (Kompasskurs)
-=====================
-0° bis 360°  (oder -180° bis +180°)
-
-       0° / 360°
-      (Norden)
-           |
-           |
-270° ------+------ 90°
-(Westen)   |     (Osten)
-           |
-         180°
-       (Süden)
-
-Heading  Richtung
-0°      Norden
-45°     Nordosten
-90°     Osten
-135°    Südosten
-180°    Süden
-225°    Südwesten
-270°    Westen
-315°    Nordwesten
-
-
-ROLL (Krängung)
-===============
--180° bis +180°  (oder 0° bis 360°)
-
-     +90°
-      |
-      | (links hoch)
-      |
-------+------ 0° (waagrecht)
-      |
-      | (rechts hoch)
-      |
-    -90°
-
-Roll  Bedeutung                     Visualisierung
-0°    Perfekt waagrecht             ───
-+15°  Leichte Neigung nach links    ╱──
-+45°  Starke Neigung nach links     │╱
-+90°  Auf linker Seite liegend      │
--15°  Leichte Neigung nach rechts   ──╲
--45°  Starke Neigung nach rechts    ╲│
--90°  Auf rechter Seite liegend     │
-±180° Auf dem Kopf                  ───
-
-
-PITCH (Stampfen)
-================
--90° bis +90°  (oder -180° bis +180°)
-
-     +90°
-      |
-      | (Bug/Nase hoch)
-      |
-------+------ 0° (waagrecht)
-      |
-      | (Bug/Nase runter)
-      |
-    -90°
-
-Pitch Bedeutung                                   Visualisierung
-0°    Horizontal                                  →
-+10°  Bug leicht oben                             ↗
-+30°  Bug stark oben (Steigflug/Welle)            ⭱
-+90°  Senkrecht nach oben                         ↑
--10°  Bug leicht unten                            ↘
--30°  Bug stark unten (Sturzflug/Wellenabfahrt)   ⭳
--90°  Senkrecht nach unten                        ↓
-
-*/
 
 IMUData updateNavigation(MPU9250_WE& imu_var){
   IMUData result;
@@ -371,21 +304,15 @@ IMUData updateNavigation(MPU9250_WE& imu_var){
 
 //////////////////////////////////
 
-uint8_t updateMenuSystem(uint8_t button){
-  int result;
+void updateMenuSystem(uint8_t button){
   if (button == 1) {
-    result = (current_display+1)%max_number_of_displays;
+    current_display = (current_display+1)%max_number_of_displays;
   } else if (button == 2) {
-    result = (current_display+max_number_of_displays-1)%max_number_of_displays;
+    current_display = (current_display+max_number_of_displays-1)%max_number_of_displays;
   }
-#if DEBUG
-  Serial.print(F("Display:\t"));
-  Serial.println(result);
-#endif
-  return result;
 }
 
-void renderDisplay_Setup(Adafruit_SSD1306& dis){
+void renderDisplay_Setup(Adafruit_SSD1306& dis, uint8_t mode){
   dis.clearDisplay();
 
   dis.setTextSize(2);
@@ -395,14 +322,21 @@ void renderDisplay_Setup(Adafruit_SSD1306& dis){
   dis.println(F("by Julian Kampitsch"));
   dis.println(F("2025"));
   dis.println(F(""));
-  dis.print(F("booting"));
-  dis.display();
-  
-  for (uint8_t i = 0; i<3; ++i){
-    delay(booting_display_message_delay);
-    dis.print(F("."));
-    dis.display();    
+  if (mode == 1){
+    dis.print(F("booting"));
+    dis.display();
+    
+    
+    for (uint8_t i = 0; i<3; ++i){
+      delay(booting_display_message_delay);
+      dis.print(F("."));
+      dis.display();    
+    }    
+  } else {
+    dis.print(F("push button to continue..."));
+    dis.display();  
   }
+
 }
 
 /*
@@ -417,33 +351,114 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_stru
   dis.clearDisplay();
   dis.setCursor(0, 0);
 
-
-  if(1){
-    dis.print(dt.hour()); dis.print(F(":")); dis.print(dt.minute()); dis.print(F(":")); dis.print(dt.second()); dis.print(F("   ")); 
-    dis.print(dt.day()); dis.print(F(".")); dis.print(dt.month()); dis.print(F(".")); dis.println(dt.year()); 
+  switch(){
+    case 0:{
+      renderDisplay_Setup(dis, 0);
+      break;
+    }
+    case 1:{
+      dis.setTextSize(1);
+      dis.print(dt.hour()); dis.print(F(":")); dis.print(dt.minute()); dis.print(F(":")); dis.print(dt.second()); dis.print(F("   ")); 
+      dis.print(dt.day()); dis.print(F(".")); dis.print(dt.month()); dis.print(F(".")); dis.println(dt.year()); 
+      
+      dis.print(F("Temp:    "));
+      float temp_temp = bme_struct.temp;
+//      if (temp_temp < 10);
+      dis.println(temp_temp,1);
+      dis.print(F("Hygr:    "));
+      dis.println(bme_struct.humi,1);
+      dis.print(F("Baro:   "));
+      float temp_baro = bme_struct.baro;
+      if (temp_baro < 1000) dis.print(F(" "));
+      dis.println(bme_struct.baro,1);
     
-    dis.print(F("T:   "));
-    dis.println(bme_struct.temp,1);
-    dis.print(F("H:   "));
-    dis.println(bme_struct.humi,1);
-    dis.print(F("P:   "));
-    dis.println(bme_struct.baro,1);
-  
-    dis.print(F("R:   "));
-    if (imu_struct.roll>=0) dis.print(F(" "));
-    dis.println(imu_struct.roll,1);
-    dis.print(F("P:   "));
-    if (imu_struct.pitch>=0) dis.print(F(" "));
-    dis.println(imu_struct.pitch,1);
-    dis.print(F("M:   "));
-    dis.println(imu_struct.heading,1);    
+      dis.print(F("Roll:    "));
+      if (imu_struct.roll>=0) dis.print(F(" "));
+      dis.println(imu_struct.roll,1);
+      dis.print(F("Pitch:   "));
+      if (imu_struct.pitch>=0) dis.print(F(" "));
+      dis.println(imu_struct.pitch,1);
+      dis.print(F("Magn:    "));
+      float temp_heading = imu_struct.heading;
+      if (temp_heading<100) dis.print(F("0"));
+      if (temp_heading<10) dis.print(F("0"));
+      dis.println(imu_struct.heading,1);   
+      dis.display(); 
+      break;
+    }
+    case 2:{
+      dis.setTextSize(2);
+      dis.print(weekdayName(dt.dayOfTheWeek())); dis.println(F(","));
+      dis.print(dt.day()); dis.print(F(".")); dis.print(dt.month()); dis.print(F(".")); dis.println(dt.year()); 
+      dis.print(dt.hour()); dis.print(F(":")); dis.print(dt.minute()); dis.print(F(":")); dis.println(dt.second());
+      dis.display(); 
+      break;
+    }
+    case 3:{
+      dis.setTextSize(2);
+      dis.print(F("T:  "));
+      dis.println(bme_struct.temp,1);
+      dis.print(F("H:  "));
+      dis.println(bme_struct.humi,1);
+      dis.print(F("B: "));
+      dis.println(bme_struct.baro,1);
+      dis.display(); 
+      break;
+      
+    }
+    case 4:{
+      dis.setTextSize(2);
+      dis.print(F("R: "));
+      float temp_roll = imu_struct.roll;
+      if (temp_roll>=0) dis.print(F(" "));
+      if (temp_roll>=0 && temp_roll <10) dis.print(F(" "));
+      if (temp_roll<0 && temp_roll >-10) dis.print(F(" "));
+      dis.println(temp_roll,1);
+      dis.print(F("P: "));
+      float temp_pitch = imu_struct.pitch;
+      if (temp_pitch>=0) dis.print(F(" "));
+      if (temp_pitch>=0 && temp_pitch <10) dis.print(F(" "));
+      if (temp_pitch<0 && temp_pitch >-10) dis.print(F(" "));
+      dis.println(temp_pitch,1);
+      dis.print(F("M: "));
+      float temp_heading = imu_struct.heading;
+      if (temp_heading<100) dis.print(F("0"));
+      if (temp_heading<10) dis.print(F("0"));
+      dis.println(imu_struct.heading,1);   
+      dis.display(); 
+      break;      
+    }
+
+  }  
+}
+
+float get_mag_mittelwert(float cur_head){
+  float result = 0;
+  uint8_t act_index = (mag_mittelwert_index+1)%mag_mittelwerte;
+  mittelwert_magnetkurse[act_index] = cur_head;
+  uint8_t divisor_counter = 0;
+  for (uint8_t i = 0; i< mag_mittelwerte; ++i){
+    float current_v = mittelwert_magnetkurse[i];
+    
+    if (current_v != -1){
+      result += current_v;
+      divisor_counter++;
+      
+    }
   }
-
-
-  dis.display();
+  return result/divisor_counter;
 }
 
 
+const char* weekdayName(uint8_t wday) {
+  static const char* names[] = {
+    "Sonntag", "Montag", "Dienstag",
+    "Mittwoch", "Donnerstag", "Freitag", "Samstag"
+  };
+
+  if (wday > 6) return "???";
+  return names[wday];
+}
 
 //////////////////////////////////
 
