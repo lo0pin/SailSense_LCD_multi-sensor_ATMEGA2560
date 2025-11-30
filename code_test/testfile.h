@@ -1,15 +1,6 @@
 #pragma once
 
 
-/****************************
-21:21:27.426 ->   0x3C  (ACK)
-21:21:27.461 ->   0x57  (ACK)
-21:21:27.461 ->   0x68  (ACK)
-21:21:27.461 ->   0x69  (ACK)
-21:21:27.494 ->   0x76  (ACK)
-****************************/
-
-
 /*********************************************
 Globale Konstanten
 *********************************************/
@@ -38,6 +29,7 @@ constexpr uint8_t MPU9250_ADDR =      0x69;
 //constexpr uint8_t INT_PIN           2          // optional, falls INT verbunden ist
 
 constexpr uint8_t array_len = 24;
+constexpr uint8_t mag_mittelwerte = 20;
 
 extern uint8_t buttoninput;
 
@@ -64,6 +56,10 @@ extern float  temp_messungen[array_len];
 extern float  humid_messungen[array_len];
 extern float  baro_messungen[array_len];
 
+extern float  mittelwert_magnetkurse[mag_mittelwerte];
+extern uint8_t mag_mittelwert_index;
+extern uint16_t mag_geglaettet;
+
 
 /*********************************************
 Typen
@@ -81,6 +77,7 @@ struct IMUData{
   float heading; //Kompasskurs
 };
 
+
 extern BMEData hourly_summe_bme;
 extern BMEData mittelw_bme;
 
@@ -96,10 +93,14 @@ uint8_t updateButtons();
 BMEData updateSensors(Adafruit_BME280& bme_var);
 BMEData get_mittelwert(BMEData& bme_now);
 IMUData updateNavigation(MPU9250_WE& imu_var);
-uint8_t updateMenuSystem(uint8_t button);
+float get_mag_mittelwert(float cur_head);
+
+void updateMenuSystem(uint8_t button);
 void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_struct, DateTime dt, uint8_t displaymode);
 
-void renderDisplay_Setup(Adafruit_SSD1306& dis);
+void renderDisplay_Setup(Adafruit_SSD1306& dis, uint8_t mode);
 void renderDisplay_everyLoop(Adafruit_SSD1306& dis);
+
+const char* weekdayName(uint8_t wday);
 
 void handleAlarms();
