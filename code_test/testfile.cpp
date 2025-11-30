@@ -208,7 +208,7 @@ bool initIMU(MPU9250_WE& imu_var){
 uint8_t updateButtons(){
   for (uint8_t i= 8; i<=12; ++i){
     if (digitalRead(i)==0){
-      return i-8;
+      return i-7;
     }
   }
   return 0;
