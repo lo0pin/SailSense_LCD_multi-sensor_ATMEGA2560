@@ -46,7 +46,8 @@ extern uint8_t mittelwert_divisor;
 extern uint8_t current_display;
 extern uint8_t max_number_of_displays;
 
-
+extern uint8_t moon_position_offset_x;
+extern bool moon_going_right;
 
 
 /*********************************************
@@ -100,6 +101,8 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_stru
 
 void renderDisplay_Setup(Adafruit_SSD1306& dis, uint8_t mode);
 void renderDisplay_everyLoop(Adafruit_SSD1306& dis);
+
+void pointOnCircle(int cx, int cy, int r, float heading_deg, int &x, int &y);
 
 const char* weekdayName(uint8_t wday);
 
