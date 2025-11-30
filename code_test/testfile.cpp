@@ -465,6 +465,15 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_stru
         dis.fillCircle(cx, cy, r, SSD1306_WHITE);
         
         dis.fillCircle(moon_position_offset_x+r, cy, r, SSD1306_BLACK);
+        if(moon_going_right == 1){
+          moon_position_offset_x++;
+          if (moon_position_offset_x >= cx+r+1) moon_going_right = 0;
+        }
+        if(moon_going_right == 0){
+          moon_position_offset_x--;
+          if (moon_position_offset_x <= cx-(r*3)-1) moon_going_right = 1;
+        }
+        /*
         if(moon_position_offset_x+r <= SCREEN_WIDTH-1 && moon_going_right == 1){
           moon_position_offset_x++;
           if(moon_position_offset_x+r == SCREEN_WIDTH-1){
@@ -477,7 +486,9 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_stru
           if ( moon_position_offset_x+r == r+1){
             moon_going_right = 1;
           }
-        }
+        }         
+         */
+
         dis.display();
         break;
       
