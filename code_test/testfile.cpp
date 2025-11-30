@@ -351,7 +351,7 @@ void renderDisplay(Adafruit_SSD1306& dis, BMEData& bme_struct, IMUData& imu_stru
   dis.clearDisplay();
   dis.setCursor(0, 0);
 
-  switch(){
+  switch(displaymode){
     case 0:{
       renderDisplay_Setup(dis, 0);
       break;
@@ -465,3 +465,4 @@ const char* weekdayName(uint8_t wday) {
 void handleAlarms(){
   
 }
+
