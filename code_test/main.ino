@@ -8,7 +8,7 @@ MPU9250_WE imu =    MPU9250_WE(MPU9250_ADDR);
 void setup() {
   Serial.begin(9600);
   systemInit(bme, rtc, display, imu);
-  renderDisplay_Setup(display);
+  renderDisplay_Setup(display, 1);
 }
 
 
@@ -17,6 +17,7 @@ void loop() {
   //renderDisplay_everyLoop(display);
   BMEData current_bme;
   IMUData current_imu;
+  
 
 
   if (millis() - globaltimer > delaytime_for_loop) {
@@ -29,10 +30,18 @@ void loop() {
     }
     
     current_imu = updateNavigation(imu);
+    mag_geglaettet = get_mag_mittelwert(current_imu.heading);
+    current_imu.heading = mag_geglaettet;
+    updateMenuSystem(buttoninput);
+    /*
+    Serial.print("buttoninput\t");
+    Serial.println(buttoninput);
+    Serial.print("current_display\t");
+    Serial.println(current_display);
+    Serial.println("===============");    
+     */
 
-    current_display = updateMenuSystem(buttoninput);
-
-
+    
     if (right_now.minute() != old_minute) {
       mittelw_bme = get_mittelwert(current_bme);
       old_minute = right_now.minute();
@@ -50,7 +59,7 @@ void loop() {
         humid_messungen[index_minus_one_hour] = mittelw_bme.humi;
         baro_messungen[index_minus_one_hour] = mittelw_bme.baro;
       }
-
+      
       old_hour = right_now.hour();
     }
 
